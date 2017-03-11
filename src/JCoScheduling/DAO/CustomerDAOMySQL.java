@@ -80,7 +80,7 @@ public class CustomerDAOMySQL implements CustomerDAO{
     }
 
     @Override
-    public Customer getCustomerByID(int customerID) throws NotFoundException {
+    public CustomerModelInterface getCustomerByID(int customerID) throws NotFoundException {
          Customer customerFromDB = null;
         
         try{

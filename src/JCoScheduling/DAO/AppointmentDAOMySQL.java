@@ -9,6 +9,7 @@ import JCoScheduling.Exceptions.NotFoundException;
 import JCoScheduling.Models.Appointment;
 import JCoScheduling.Models.AuditInfo;
 import JCoScheduling.Models.Customer;
+import JCoScheduling.Models.CustomerModelInterface;
 import JCoScheduling.Models.User;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -54,7 +55,7 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
             
             while(rs.next()){
                 CustomerDAO custDAO = new CustomerDAOMySQL();
-                Customer customer=null;
+                CustomerModelInterface customer=null;
                 try{
                     customer = custDAO.getCustomerByID(rs.getInt("customerId"));
                 }catch(NotFoundException ex){
@@ -92,7 +93,7 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
             
             while(rs.next()){
                 CustomerDAO custDAO = new CustomerDAOMySQL();
-                Customer customer=null;
+                CustomerModelInterface customer=null;
                 try{
                     customer = custDAO.getCustomerByID(rs.getInt("customerId"));
                 }catch(NotFoundException ex){
@@ -129,7 +130,7 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
             
             while(rs.next()){
                 CustomerDAO custDAO = new CustomerDAOMySQL();
-                Customer customer=null;
+                CustomerModelInterface customer=null;
                 try{
                     customer = custDAO.getCustomerByID(rs.getInt("customerId"));
                 }catch(NotFoundException ex){
@@ -194,7 +195,7 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
             
             while(rs.next()){
                 CustomerDAO custDAO = new CustomerDAOMySQL();
-                Customer customer=null;
+                CustomerModelInterface customer=null;
                 try{
                     customer = custDAO.getCustomerByID(rs.getInt("customerId"));
                 }catch(NotFoundException ex){
@@ -232,7 +233,7 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
             
             while(rs.next()){
                 CustomerDAO custDAO = new CustomerDAOMySQL();
-                Customer customer=null;
+                CustomerModelInterface customer=null;
                 try{
                     customer = custDAO.getCustomerByID(rs.getInt("customerId"));
                 }catch(NotFoundException ex){
@@ -277,7 +278,7 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
         
         if(appointment.getCustomer().getCustomerID()==-1){ //no database ID yet assigned
             CustomerDAO custDAO = new CustomerDAOMySQL();
-            custDAO.createCustomer((Customer)appointment.getCustomer());
+            custDAO.createCustomer(appointment.getCustomer());
         } else {
             String query = "INSERT INTO appointment (appointmentId, customerId,title,description, location, contact, url, start, end, createdBy, lastUpdate, lastUpdateBy) VALUES ("+
                             nextID+", "+
@@ -307,7 +308,7 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
     public void updateAppointment(Appointment appointment) {
          if(appointment.getCustomer().getCustomerID()==-1){ //no database ID yet assigned
             CustomerDAO custDAO = new CustomerDAOMySQL();
-            custDAO.createCustomer((Customer)appointment.getCustomer());
+            custDAO.createCustomer(appointment.getCustomer());
         } 
         String query = "UPDATE appointment SET  customerId = "+appointment.getCustomer().getCustomerID()+", "+
                                         "title = '"+appointment.getTitle()+"', "+

@@ -41,7 +41,7 @@ public class Appointment implements AppointmentModelInterface, CustomerObserver,
     }
 
     //constructor for when all fields are known (e.g loading from DB)
-    public Appointment(int apptID, Customer customer, String title, String description, String location, String contact, String URL, ZonedDateTime startTime, ZonedDateTime endTime, AuditInfo auditInfo) {
+    public Appointment(int apptID, CustomerModelInterface customer, String title, String description, String location, String contact, String URL, ZonedDateTime startTime, ZonedDateTime endTime, AuditInfo auditInfo) {
         this.apptID = apptID;
         this.customer = customer;
         this.customer.registerObserver(this);
@@ -58,7 +58,7 @@ public class Appointment implements AppointmentModelInterface, CustomerObserver,
     }
 
     //constructor for when database ID is unknown
-    public Appointment(Customer customer, String title, String description, String location, String contact, String URL, ZonedDateTime startTime, ZonedDateTime endTime, AuditInfo auditInfo) {
+    public Appointment(CustomerModelInterface customer, String title, String description, String location, String contact, String URL, ZonedDateTime startTime, ZonedDateTime endTime, AuditInfo auditInfo) {
         this.customer = customer;
         this.customer.registerObserver(this);
         this.title = title;
