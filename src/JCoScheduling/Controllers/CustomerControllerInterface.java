@@ -5,6 +5,11 @@
  */
 package JCoScheduling.Controllers;
 
+import JCoScheduling.Models.AddressModelInterface;
+import JCoScheduling.Models.CustomerModelInterface;
+import JCoScheduling.Models.UserModelInterface;
+import javafx.collections.ObservableList;
+
 /**
  *
  * @author virtu
@@ -13,6 +18,16 @@ public interface CustomerControllerInterface {
     
     public void showCustomerEntryView();
     
+    public void showCustomerListView();
+    
     public void updateCustomer();
+    
+    public void createCustomer(CustomerModelInterface customer);
+    
+    public ObservableList<CustomerModelInterface> getAllCustomers();
+    
+    public AddressModelInterface buildAddress(String addr1, String addr2, String city, String state, String zip, String country);
+    
+    public UserModelInterface getUser();
     
 }

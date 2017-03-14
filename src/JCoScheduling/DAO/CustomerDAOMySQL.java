@@ -303,10 +303,11 @@ public class CustomerDAOMySQL implements CustomerDAO{
             AddressDAO addrDAO = new AddressDAOMySQL();
             addrDAO.createAddress((Address)customer.getAddress());
         } else {
-            String query = "INSERT INTO customer (customerId, customerName, addressId,createDate, createdBy, lastUpdate, lastUpdateBy) VALUES ("+
+            String query = "INSERT INTO customer (customerId, customerName, addressId,active, createDate, createdBy, lastUpdate, lastUpdateBy) VALUES ("+
                             nextID+", '"+
                             customer.getCustomerName()+"', "+
                             customer.getAddress().getAddressID()+", "+
+                            customer.isActiveInd()+", '"+
                             customer.getAuditInfo().getCreatedDate()+"', '"+
                             customer.getAuditInfo().getCreatedBy()+"', '"+
                             customer.getAuditInfo().getLastUpdate()+"', '"+

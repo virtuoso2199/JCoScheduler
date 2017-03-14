@@ -119,8 +119,7 @@ public class C195Final2 extends Application implements UserObserver{
                 this.user.setUsername(txtUsername.getText());
                 this.user.setPassword(txtPassword.getText());
                 if(userController.validateLogin()){ //user authenticated
-                    Stage mainWindow = MainWindow.getMainWindow();
-                    mainWindow.show();
+                    new MainWindow(this.user);
                     primaryStage.close();
                 } else {
                     //user could not be authenticated, show error
@@ -148,8 +147,7 @@ public class C195Final2 extends Application implements UserObserver{
                      this.user.setUsername(txtUsername.getText());
                      this.user.setPassword(txtPassword.getText());
                      if(userController.validateLogin()){ //user authenticated
-                         Stage mainWindow = MainWindow.getMainWindow();
-                         mainWindow.show();
+                         new MainWindow(this.user);
                          primaryStage.close();
                      } else {
                          //user could not be authenticated, show error

@@ -7,6 +7,7 @@ package JCoScheduling.Models;
 
 import JCoScheduling.Exceptions.FormatException;
 import java.util.ArrayList;
+import javafx.beans.property.SimpleStringProperty;
 
 
 /**
@@ -20,10 +21,16 @@ public class Customer implements CustomerModelInterface, AddressObserver, AuditI
     private int activeInd;
     private AuditInfoModelInterface auditInfo;
     private ArrayList<CustomerObserver> observers;
+    
+    //Property values for UI Controls
+    private SimpleStringProperty propCustomerName;
+    private SimpleStringProperty propCustomerID;
 
     public Customer(){
         this.customerID = -1;
+        this.propCustomerID = new SimpleStringProperty(String.valueOf(this.customerID));
         this.customerName = "Undefined";
+        this.propCustomerName = new SimpleStringProperty(customerName);
         this.address = new Address();
         this.activeInd = 0;
         this.auditInfo = new AuditInfo();
@@ -33,7 +40,9 @@ public class Customer implements CustomerModelInterface, AddressObserver, AuditI
     //constuctor for when all fields are known (i.e. from database)
     public Customer(int customerID, String customerName, Address address, int activeInd,AuditInfo auditInfo) {
         this.customerID = customerID;
+        this.propCustomerID= new SimpleStringProperty(String.valueOf(this.customerID));
         this.customerName = customerName;
+        this.propCustomerName= new SimpleStringProperty(customerName);
         this.address= address;
         this.address.registerObserver(this);
         this.activeInd = activeInd;
@@ -44,7 +53,10 @@ public class Customer implements CustomerModelInterface, AddressObserver, AuditI
 
     //constructor for Customer objects not created by database
     public Customer(String customerName, Address address, int activeInd, AuditInfo auditInfo) {
+        this.customerID = -1;
+        this.propCustomerID = new SimpleStringProperty(String.valueOf(this.customerID));
         this.customerName = customerName;
+        this.propCustomerName = new SimpleStringProperty(customerName);
         this.address = address;
         this.address.registerObserver(this);
         this.activeInd = activeInd;
@@ -73,11 +85,13 @@ public class Customer implements CustomerModelInterface, AddressObserver, AuditI
     
     public void setCustomerID(int ID){
         this.customerID = ID;
+        this.propCustomerID.set(String.valueOf(customerID));
     }
     
     public void setName(String name) throws FormatException {
         if(name.length()>0 && name.length() <46){
             this.customerName = name;
+            this.propCustomerName.set(customerName);
         } else {
             throw new FormatException("Name must be between 1 and 45 characters");
         }

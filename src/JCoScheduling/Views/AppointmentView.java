@@ -89,8 +89,7 @@ public class AppointmentView {
         Button btnCancel = new Button("Cancel");
         btnCancel.setOnAction(event->{
             //return to MainWindow
-            Stage mainWindow = MainWindow.getMainWindow();
-            mainWindow.show();
+            new MainWindow();
             stage.close();
         });
 //        root.add(btnCancel,2,4);

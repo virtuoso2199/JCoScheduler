@@ -174,8 +174,7 @@ public class CustomerEditView implements CustomerViewInterface{
         
         btnCancel = new Button("Cancel");
         btnCancel.setOnAction(event->{
-            Stage mainWindow = MainWindow.getMainWindow();
-            mainWindow.show();
+            new MainWindow(controller.getUser());
             customerStage.close();
         });
         

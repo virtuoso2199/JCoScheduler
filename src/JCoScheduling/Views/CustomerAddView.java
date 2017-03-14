@@ -50,6 +50,8 @@ public class CustomerAddView implements CustomerViewInterface{
     private Label lblZip;
     private TextField txtZip;
     private Label lblPhone;
+    private Label lblCountry;
+    private TextField txtCountry;
     private TextField txtPhone;
     private Button btnSave;
     private Button btnClear;
@@ -62,24 +64,7 @@ public class CustomerAddView implements CustomerViewInterface{
         this.customer.registerObserver(this);
 
     }
-    
-    /**
-     * showAddView shows Stage used to add a new customer to the database
-     */
-    
-//    public void showAddView(){
-//        customerStage.show();
-//    }
-//    
-//    public void showEditView(){
-//        //uses same view but populates field with customer data
-//
-//    }
-//    
-//    public void showListView(){
-//        
-//    }
-    
+  
     /**
      * buildCustomerWindow returns a stage containing all the necessary elements for the Customer Maintenance Form
      * @return Stage of Customer Maintenance Form
@@ -142,14 +127,32 @@ public class CustomerAddView implements CustomerViewInterface{
         txtZip.setPrefWidth(40);
         root.add(txtZip,5,4);
         
+        lblCountry = new Label("Country");
+        root.add(lblCountry,0,5);
+        
+        txtCountry = new TextField();
+        root.add(txtCountry,1,5);
+        
         lblPhone = new Label("Telephone");
-        root.add(lblPhone,0,5);
+        root.add(lblPhone,0,6);
         
         txtPhone = new TextField();
-        root.add(txtPhone,1,5);
+        root.add(txtPhone,1,6);
         
         btnSave = new Button("Save");
-        root.add(btnSave,0,6);
+        btnSave.setOnAction(e->{
+            //build objects up dependency chain: Country, City, Address, then Customer
+            this.customer.setAddress(controller.buildAddress(txtAddr1.getText(), 
+                                                             txtAddr2.getText(), 
+                                                             txtCity.getText(),
+                                                             txtState.getText(), 
+                                                             txtZip.getText(), 
+                                                             txtCountry.getText()));
+            
+            controller.showCustomerListView();
+            customerStage.close();
+        });
+        root.add(btnSave,0,7);
         
         btnClear = new Button("Clear");
         btnClear.setOnAction(event->{
@@ -162,18 +165,17 @@ public class CustomerAddView implements CustomerViewInterface{
             txtZip.clear();
             txtPhone.clear();
         });
-        root.add(btnClear,1,6);
+        root.add(btnClear,1,7);
         
         btnCancel = new Button("Cancel");
         btnCancel.setOnAction(event->{
-            Stage mainWindow = MainWindow.getMainWindow();
-            mainWindow.show();
+            controller.showCustomerListView();
             customerStage.close();
         });
         
         
         
-        root.add(btnCancel,2,6);
+        root.add(btnCancel,2,7);
         
         scene = new Scene(root,800,350);
         
@@ -182,7 +184,6 @@ public class CustomerAddView implements CustomerViewInterface{
 
     }
 
-    @Override
     public void updateCustomer(Customer customer) {
         this.customer = customer;
         update();
@@ -197,6 +198,6 @@ public class CustomerAddView implements CustomerViewInterface{
 
     @Override
     public void update() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //no fields to update: no action required
     }
 }

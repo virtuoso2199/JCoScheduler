@@ -6,7 +6,10 @@
 package JCoScheduling.Views;
 
 import JCoScheduling.Controllers.CustomerController;
+import JCoScheduling.DAO.UserDAOMySQL;
+import JCoScheduling.Exceptions.NotFoundException;
 import JCoScheduling.Models.Customer;
+import JCoScheduling.Models.UserModelInterface;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -18,23 +21,35 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 /**
+ * MainWindow is a controller and view all in one simply because it is just a launchpad to other parts of the program
  *
  * @author M219663
  */
 public class MainWindow {
-    private static Stage mainWindow;
+    private Stage mainWindow;
+    private UserModelInterface user;
     
-    public static Stage getMainWindow(){
-        if(mainWindow==null){
-            mainWindow = buildMainWindow();
-        }
-        
-        return mainWindow;
-
-        
+    public MainWindow(UserModelInterface user){
+        this.user = user;
+        mainWindow = buildMainWindow();
+        mainWindow.show();
     }
     
-    private static Stage buildMainWindow(){
+    //DEBUG ONLY UNTIL CONTROLLERS ARE ALL IN PLACE
+    
+    public MainWindow(){
+        try{
+            this.user = new UserDAOMySQL().getUserByName("jbowley");
+        } catch (NotFoundException ex){
+            System.out.println("User not found?!");
+        }
+        
+        mainWindow = buildMainWindow();
+        mainWindow.show();
+    }
+    
+        
+    private Stage buildMainWindow(){
         Stage stage = new Stage();
         
         GridPane root = new GridPane();
@@ -52,8 +67,8 @@ public class MainWindow {
         
         Button btnCustomer = new Button("Customers");
         btnCustomer.setOnAction(event->{
-            CustomerController cc = new CustomerController(new Customer());
-            cc.showCustomerEntryView();
+            CustomerController cc = new CustomerController(new Customer(), this.user);
+            cc.showCustomerListView();
             stage.close();
         });
         root.add(btnCustomer,0,1);
