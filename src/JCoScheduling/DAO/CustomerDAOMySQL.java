@@ -55,7 +55,7 @@ public class CustomerDAOMySQL implements CustomerDAO{
             
             while(rs.next()){
                 AddressDAO addrDAO = new AddressDAOMySQL();
-                Address address=null;
+                Address address=new Address();
                 try{
                     address = addrDAO.getAddressByID(rs.getInt("addressId"));
                 }catch(NotFoundException ex){
@@ -63,7 +63,7 @@ public class CustomerDAOMySQL implements CustomerDAO{
                 }
                 
                 try{
-                    Customer customer = new Customer(rs.getInt("cusomterId"),
+                    Customer customer = new Customer(rs.getInt("customerId"),
                                                      rs.getString("customerName"),
                                                      addrDAO.getAddressByID(rs.getInt("addressId")),
                                                      rs.getInt("active"),
@@ -76,6 +76,10 @@ public class CustomerDAOMySQL implements CustomerDAO{
         }catch(SQLException ex){
             ex.printStackTrace();
         }
+        System.out.println(customerList.size()+" customers in database"); //DEBUG ONLY
+        for(CustomerModelInterface customer: customerList){//DEBUG ONLY
+            System.out.println(customer);//DEBUG ONLY
+        }//DEBUG ONLY
         return customerList;
     }
 
@@ -302,24 +306,27 @@ public class CustomerDAOMySQL implements CustomerDAO{
         if(customer.getAddress().getAddressID()==-1){ //no database ID yet assigned
             AddressDAO addrDAO = new AddressDAOMySQL();
             addrDAO.createAddress((Address)customer.getAddress());
-        } else {
-            String query = "INSERT INTO customer (customerId, customerName, addressId,active, createDate, createdBy, lastUpdate, lastUpdateBy) VALUES ("+
-                            nextID+", '"+
-                            customer.getCustomerName()+"', "+
-                            customer.getAddress().getAddressID()+", "+
-                            customer.isActiveInd()+", '"+
-                            customer.getAuditInfo().getCreatedDate()+"', '"+
-                            customer.getAuditInfo().getCreatedBy()+"', '"+
-                            customer.getAuditInfo().getLastUpdate()+"', '"+
-                            customer.getAuditInfo().getLastUpdatedBy()+"')";
-            try{
-                Statement stmt = this.conn.createStatement();
-                stmt.execute(query);
-                customer.setCustomerID(nextID); //update referenced city object with ID from database
-            }catch(SQLException ex){
-                ex.printStackTrace();
-            }
+        } 
+        
+        String query = "INSERT INTO customer (customerId, customerName, addressId,active, createDate, createdBy, lastUpdate, lastUpdateBy) VALUES ("+
+                        nextID+", '"+
+                        customer.getCustomerName()+"', "+
+                        customer.getAddress().getAddressID()+", "+
+                        customer.isActiveInd()+", '"+
+                        customer.getAuditInfo().getCreatedDate()+"', '"+
+                        customer.getAuditInfo().getCreatedBy()+"', '"+
+                        customer.getAuditInfo().getLastUpdate()+"', '"+
+                        customer.getAuditInfo().getLastUpdatedBy()+"')";
+        try{
+            System.out.println(query); //DEBUG ONLY
+            Statement stmt = this.conn.createStatement();
+            stmt.execute(query);
+            customer.setCustomerID(nextID); //update referenced city object with ID from database
+            System.out.println("Customer in CustomerDAO: "+ customer); //DEBUG ONLY
+        }catch(SQLException ex){
+            ex.printStackTrace();
         }
+
     }
 
     @Override

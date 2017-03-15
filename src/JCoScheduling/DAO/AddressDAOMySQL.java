@@ -53,7 +53,7 @@ public class AddressDAOMySQL implements AddressDAO{
             
             while(rsGetAddr.next()){
                 CityDAO cityDAO = new CityDAOMySQL();
-                City city=null;
+                City city=new City();
                 try{
                     city = cityDAO.getCityByID(rsGetAddr.getInt("cityId"));
                 }catch(NotFoundException ex){
@@ -249,26 +249,27 @@ public class AddressDAOMySQL implements AddressDAO{
         if(address.getCityID()==-1){ //no database ID yet assigned
             CityDAO cityDAO = new CityDAOMySQL();
             cityDAO.createCity((City)address.getCity());
-        } else {
-            String query = "INSERT INTO address (addressId, address, address2,cityId,postalCode,phone, createDate, createdBy, lastUpdate, lastUpdateBy) VALUES ("+
-                            nextID+", '"+
-                            address.getAddrLine1()+"', '"+
-                            address.getAddrLine2()+"', "+
-                            address.getCityID()+", '"+
-                            address.getPostCode()+"', '"+
-                            address.getPhone()+"', '"+
-                            address.getAuditInfo().getCreatedDate()+"', '"+
-                            address.getAuditInfo().getCreatedBy()+"', '"+
-                            address.getAuditInfo().getLastUpdate()+"', '"+
-                            address.getAuditInfo().getLastUpdatedBy()+"')";
-            try{
-                Statement stmt = this.conn.createStatement();
-                stmt.execute(query);
-                address.setAddressID(nextID); //update referenced city object with ID from database
-            }catch(SQLException ex){
-                ex.printStackTrace();
-            }
+        } 
+        
+        String query = "INSERT INTO address (addressId, address, address2,cityId,postalCode,phone, createDate, createdBy, lastUpdate, lastUpdateBy) VALUES ("+
+                        nextID+", '"+
+                        address.getAddrLine1()+"', '"+
+                        address.getAddrLine2()+"', "+
+                        address.getCityID()+", '"+
+                        address.getPostCode()+"', '"+
+                        address.getPhone()+"', '"+
+                        address.getAuditInfo().getCreatedDate()+"', '"+
+                        address.getAuditInfo().getCreatedBy()+"', '"+
+                        address.getAuditInfo().getLastUpdate()+"', '"+
+                        address.getAuditInfo().getLastUpdatedBy()+"')";
+        try{
+            Statement stmt = this.conn.createStatement();
+            stmt.execute(query);
+            address.setAddressID(nextID); //update referenced city object with ID from database
+        }catch(SQLException ex){
+            ex.printStackTrace();
         }
+        
     }
 
   

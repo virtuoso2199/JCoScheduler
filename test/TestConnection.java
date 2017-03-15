@@ -51,6 +51,8 @@ public class TestConnection {
                System.out.println();
             }
             
+            statement.close();
+            
             
             Statement userStatement = conn.createStatement();
             System.out.println("\n\n");
@@ -74,6 +76,8 @@ public class TestConnection {
                System.out.println();
             }
             
+            userStatement.close();
+            
             
             Statement countryStatement = conn.createStatement();
             System.out.println("\n\n");
@@ -91,12 +95,14 @@ public class TestConnection {
             System.out.println();
             
             //print values
-            while(userResults.next()){
+            while(countryResults.next()){
                for(int i=1;i<=columnCount;i++){
                     System.out.print(countryResults.getString(i)+"\t");
                 }
                System.out.println();
             }
+            
+            countryStatement.close();
             
             
             Statement addrStatement = conn.createStatement();
@@ -114,12 +120,14 @@ public class TestConnection {
             
             System.out.println();
             //print values
-            while(userResults.next()){
+            while(addrResults.next()){
                for(int i=1;i<=columnCount;i++){
                     System.out.print(addrResults.getString(i)+"\t");
                 }
                System.out.println();
             }
+            
+            addrStatement.close();
            
             
             Statement custStatement = conn.createStatement();
@@ -138,12 +146,14 @@ public class TestConnection {
             System.out.println();
             
             //print values
-            while(userResults.next()){
+            while(custResults.next()){
                for(int i=1;i<=columnCount;i++){
                     System.out.print(custResults.getString(i)+"\t");
                 }
-               
+               System.out.println();
             }
+            
+            custStatement.close();
            
             
             Statement apptStatement = conn.createStatement();
@@ -162,12 +172,14 @@ public class TestConnection {
             System.out.println();
             
             //print values
-            while(userResults.next()){
+            while(apptResults.next()){
                for(int i=1;i<=columnCount;i++){
                     System.out.print(apptResults.getString(i)+"\t");
                 }
                System.out.println();
             }
+            
+            apptStatement.close();
             
             
             Statement incStatement = conn.createStatement();
@@ -185,12 +197,14 @@ public class TestConnection {
             
             System.out.println();
             //print values
-            while(userResults.next()){
+            while(incResults.next()){
                for(int i=1;i<=columnCount;i++){
                     System.out.print(incResults.getString(i)+"\t");
                 }
                System.out.println();
             }
+            
+            incStatement.close();
             
             
             Statement remStatement = conn.createStatement();
@@ -198,7 +212,7 @@ public class TestConnection {
             System.out.println("Contents of Reminder:");
             System.out.println("=====================\n");
             String remQuery = "SELECT * FROM reminder";
-            ResultSet remResults = incStatement.executeQuery(remQuery);
+            ResultSet remResults = remStatement.executeQuery(remQuery);
             ResultSetMetaData rsmdRem = remResults.getMetaData();
             columnCount = rsmdRem.getColumnCount();
             //print columns
@@ -209,12 +223,14 @@ public class TestConnection {
             System.out.println();
             
             //print values
-            while(userResults.next()){
+            while(remResults.next()){
                for(int i=1;i<=columnCount;i++){
                     System.out.print(remResults.getString(i)+"\t");
                 }
                System.out.println();
             }
+            
+            remStatement.close();
             
         } catch (SQLException e) {
             System.out.println("SQLException: "+e.getMessage());

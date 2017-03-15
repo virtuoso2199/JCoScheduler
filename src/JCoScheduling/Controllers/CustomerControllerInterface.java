@@ -26,7 +26,7 @@ public interface CustomerControllerInterface {
     
     public ObservableList<CustomerModelInterface> getAllCustomers();
     
-    public AddressModelInterface buildAddress(String addr1, String addr2, String city, String state, String zip, String country);
+    public AddressModelInterface buildAddress(String addr1, String addr2, String city, String state, String zip, String country, String phone);
     
     public UserModelInterface getUser();
     

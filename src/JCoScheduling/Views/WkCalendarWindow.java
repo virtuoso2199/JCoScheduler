@@ -123,8 +123,7 @@ public class WkCalendarWindow {
         root.add(btnMonth,0,2);
         Button btnOK = new Button("OK");
         btnOK.setOnAction(event->{
-            Stage mainWindow = MainWindow.getMainWindow();
-            mainWindow.show();
+            new MainWindow();
             stage.close();
         });
         GridPane.setHalignment(btnOK, HPos.CENTER);

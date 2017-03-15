@@ -56,9 +56,9 @@ public class ReminderDAOMySQL implements ReminderDAO{
             while(rs.next()){
                 //get data about Appointment and SnoozeIncrement objects from database
                 AppointmentDAO apptDAO = new AppointmentDAOMySQL();
-                Appointment appointment=null;
+                Appointment appointment=new Appointment();
                 SnoozeIncrementDAO incrementDAO = new SnoozeIncrementDAOMySQL();
-                SnoozeIncrement increment = null;
+                SnoozeIncrement increment = new SnoozeIncrement();
                 
                 try{
                     appointment = apptDAO.getApptByID(rs.getInt("appointmentId"));
@@ -95,9 +95,9 @@ public class ReminderDAOMySQL implements ReminderDAO{
             while(rs.next()){
                 //get data about Appointment and SnoozeIncrement objects from database
                 AppointmentDAO apptDAO = new AppointmentDAOMySQL();
-                Appointment appointment=null;
+                Appointment appointment=new Appointment();
                 SnoozeIncrementDAO incrementDAO = new SnoozeIncrementDAOMySQL();
-                SnoozeIncrement increment = null;
+                SnoozeIncrement increment = new SnoozeIncrement();
                 
                 try{
                     appointment = apptDAO.getApptByID(rs.getInt("appointmentId"));

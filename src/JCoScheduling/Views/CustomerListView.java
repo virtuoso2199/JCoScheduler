@@ -8,9 +8,11 @@ package JCoScheduling.Views;
 import JCoScheduling.Controllers.CustomerControllerInterface;
 import JCoScheduling.Models.Customer;
 import JCoScheduling.Models.CustomerModelInterface;
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -29,11 +31,12 @@ public class CustomerListView implements CustomerViewInterface{
     private Stage customerListView;
     private CustomerControllerInterface controller;
     private CustomerModelInterface customer;
+    private final ObservableList customerList;
     
     //UI Controls
     GridPane root;
     Label lblTitle;
-    TableView tvCustomerList;
+    ListView tvCustomerList;
     TableColumn tcCustID;
     TableColumn tcCustName;
     Button btnAdd;
@@ -45,6 +48,7 @@ public class CustomerListView implements CustomerViewInterface{
         this.controller = controller;
         this.customer = customer;
         this.customer.registerObserver(this);
+        this.customerList = controller.getAllCustomers();
     }
     
     public void buildView(){
@@ -63,13 +67,15 @@ public class CustomerListView implements CustomerViewInterface{
         
         //get customer list from controller to populate list with
         
-        tvCustomerList = new TableView();
-        tcCustID = new TableColumn("ID");
-        tcCustID.setCellFactory(new PropertyValueFactory<CustomerModelInterface,String>("propCustomerID"));
-        tcCustName = new TableColumn("Name");
-        tcCustName.setCellFactory(new PropertyValueFactory<CustomerModelInterface,String>("propCustomerName"));
-        tvCustomerList.setItems(controller.getAllCustomers());
-        tvCustomerList.getColumns().addAll(tcCustID,tcCustName);
+        tvCustomerList = new ListView();
+        
+        tvCustomerList.setItems(this.customerList);
+//        tcCustID = new TableColumn("ID");
+//        tcCustID.setCellValueFactory(new PropertyValueFactory("propCustomerID"));
+//        tcCustName = new TableColumn("Name");
+//        tcCustName.setMinWidth(100);
+//        tcCustName.setCellValueFactory(new PropertyValueFactory<CustomerModelInterface,String>("prpCustomerName"));
+//        tvCustomerList.getColumns().addAll(tcCustName);
         
         
         root.add(tvCustomerList, 0, 1,5,10);

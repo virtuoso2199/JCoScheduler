@@ -6,6 +6,7 @@
 package JCoScheduling.Views;
 
 import JCoScheduling.Controllers.CustomerControllerInterface;
+import JCoScheduling.Exceptions.FormatException;
 import JCoScheduling.Models.Customer;
 import JCoScheduling.Models.CustomerModelInterface;
 import JCoScheduling.Models.CustomerObserver;
@@ -147,8 +148,16 @@ public class CustomerAddView implements CustomerViewInterface{
                                                              txtCity.getText(),
                                                              txtState.getText(), 
                                                              txtZip.getText(), 
-                                                             txtCountry.getText()));
-            
+                                                             txtCountry.getText(),
+                                                             txtPhone.getText()));
+            try{
+                customer.setName(txtLastName.getText()+", "+ txtFirstName.getText());
+                customer.setActive(1);
+            }catch (FormatException ex){
+                //handle bad formatting
+            }
+            System.out.println("Customer in View: "+customer); //DEBUG ONLY
+            controller.createCustomer(customer);
             controller.showCustomerListView();
             customerStage.close();
         });

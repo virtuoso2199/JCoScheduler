@@ -8,6 +8,7 @@ package JCoScheduling.Models;
 import JCoScheduling.Exceptions.FormatException;
 import java.util.ArrayList;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 
 /**
@@ -23,14 +24,14 @@ public class Customer implements CustomerModelInterface, AddressObserver, AuditI
     private ArrayList<CustomerObserver> observers;
     
     //Property values for UI Controls
-    private SimpleStringProperty propCustomerName;
-    private SimpleStringProperty propCustomerID;
+    private final SimpleStringProperty prpCustomerName;
+    private final SimpleStringProperty propCustomerID;
 
     public Customer(){
         this.customerID = -1;
         this.propCustomerID = new SimpleStringProperty(String.valueOf(this.customerID));
         this.customerName = "Undefined";
-        this.propCustomerName = new SimpleStringProperty(customerName);
+        this.prpCustomerName = new SimpleStringProperty(this.customerName);
         this.address = new Address();
         this.activeInd = 0;
         this.auditInfo = new AuditInfo();
@@ -42,7 +43,7 @@ public class Customer implements CustomerModelInterface, AddressObserver, AuditI
         this.customerID = customerID;
         this.propCustomerID= new SimpleStringProperty(String.valueOf(this.customerID));
         this.customerName = customerName;
-        this.propCustomerName= new SimpleStringProperty(customerName);
+        this.prpCustomerName= new SimpleStringProperty(customerName);
         this.address= address;
         this.address.registerObserver(this);
         this.activeInd = activeInd;
@@ -56,7 +57,7 @@ public class Customer implements CustomerModelInterface, AddressObserver, AuditI
         this.customerID = -1;
         this.propCustomerID = new SimpleStringProperty(String.valueOf(this.customerID));
         this.customerName = customerName;
-        this.propCustomerName = new SimpleStringProperty(customerName);
+        this.prpCustomerName = new SimpleStringProperty(customerName);
         this.address = address;
         this.address.registerObserver(this);
         this.activeInd = activeInd;
@@ -73,6 +74,14 @@ public class Customer implements CustomerModelInterface, AddressObserver, AuditI
     public String getCustomerName() {
         return customerName;
     }
+    
+    public String getPrpCustomerName(){
+        return this.prpCustomerName.get();
+    }
+    
+//    public StringProperty getPrpCustomerName(){
+//        return this.prpCustomerName;
+//    }
 
     public AddressModelInterface getAddress() {
         return address;
@@ -91,7 +100,7 @@ public class Customer implements CustomerModelInterface, AddressObserver, AuditI
     public void setName(String name) throws FormatException {
         if(name.length()>0 && name.length() <46){
             this.customerName = name;
-            this.propCustomerName.set(customerName);
+            this.prpCustomerName.set(customerName);
         } else {
             throw new FormatException("Name must be between 1 and 45 characters");
         }
@@ -141,6 +150,11 @@ public class Customer implements CustomerModelInterface, AddressObserver, AuditI
     public void updateAuditInfo(AuditInfo auditInfo) {
         this.auditInfo=auditInfo;
         notifyObservers();
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" + "customerID=" + customerID + ", customerName=" + customerName + ", address=" + address + ", activeInd=" + activeInd + ", auditInfo=" + auditInfo + ", observers=" + observers + ", propCustomerName=" + prpCustomerName + ", propCustomerID=" + propCustomerID + '}';
     }
     
     

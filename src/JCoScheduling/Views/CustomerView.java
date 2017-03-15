@@ -109,8 +109,7 @@ public class CustomerView {
         
         Button btnCancel = new Button("Cancel");
         btnCancel.setOnAction(event->{
-            Stage mainWindow = MainWindow.getMainWindow();
-            mainWindow.show();
+            new MainWindow();
             stage.close();
         });
         

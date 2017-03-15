@@ -40,7 +40,7 @@ public class Address implements AddressModelInterface, AuditInfoObserver, CityOb
         this.addrLine1 = addrLine1;
         this.addrLine2 = addrLine2;
         this.city = city;
-        this.city.registerObserver(this);
+        //this.city.registerObserver(this);
         this.postCode = postCode;
         this.phone = phone;
         this.auditInfo = auditInfo;

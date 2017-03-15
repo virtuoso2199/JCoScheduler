@@ -13,10 +13,12 @@ import JCoScheduling.DAO.CountryDAO;
 import JCoScheduling.DAO.CountryDAOMySQL;
 import JCoScheduling.DAO.CustomerDAO;
 import JCoScheduling.DAO.CustomerDAOMySQL;
+import JCoScheduling.Exceptions.FormatException;
 import JCoScheduling.Exceptions.NotFoundException;
 import JCoScheduling.Models.Address;
 import JCoScheduling.Models.AddressModelInterface;
 import JCoScheduling.Models.AuditInfo;
+import JCoScheduling.Models.AuditInfoModelInterface;
 import JCoScheduling.Models.City;
 import JCoScheduling.Models.CityModelInterface;
 import JCoScheduling.Models.Country;
@@ -86,7 +88,7 @@ public class CustomerController implements CustomerControllerInterface{
     }
 
     @Override
-    public AddressModelInterface buildAddress(String addr1, String addr2, String city, String state, String zip, String country) {
+    public AddressModelInterface buildAddress(String addr1, String addr2, String city, String state, String zip, String country, String phone) {
         AddressModelInterface customerAddress = new Address();
         CountryModelInterface customerCountry = new Country();
         CityModelInterface customerCity = new City();
@@ -106,17 +108,24 @@ public class CustomerController implements CustomerControllerInterface{
         
         try {
             //get first match for city by name. Add logic to handle multiple cities with same name?
-            customerCity = cityDAO.getCityByName(city).get(0);
+            customerCity = cityDAO.getCityByName(city+", "+state).get(0);
             customerAddress.setCity(customerCity);
         } catch(NotFoundException ex){
             //country doesn't exist in database so create it
-            customerCity.setCityName(city);
+            customerCity.setCityName(city+", "+state);
             customerCity.setCountry(customerCountry);
             customerCity.setAuditInfo(new AuditInfo(this.user.getUsername(),LocalDateTime.now(),this.user.getUsername(),LocalDateTime.now()));
             cityDAO.createCity((City)customerCity); //update DAO objects to use CityModelInterface
             customerAddress.setCity(customerCity);
         }
-        
+        try{
+            customerAddress.setAddrLine1(addr1);
+            customerAddress.setAddrLine2(addr2);
+            customerAddress.setPostCode(zip);
+            customerAddress.setPhone(phone);
+        } catch(FormatException ex){
+            //handle bad formatting
+        }
         //now that Address component objects have been created, add address to the database
         addrDAO.createAddress((Address)customerAddress); //update DAO object to use AddressModelInterface
         
@@ -124,6 +133,8 @@ public class CustomerController implements CustomerControllerInterface{
     }
     
     public void createCustomer(CustomerModelInterface customer){
+        customer.setAuditInfo(new AuditInfo(user.getUsername(),LocalDateTime.now(),user.getUsername(),LocalDateTime.now()));
+        System.out.println("Customer in Controller: "+customer); //DEBUG ONLY
         customerDAO.createCustomer(customer);
     }
     

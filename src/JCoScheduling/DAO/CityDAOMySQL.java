@@ -56,7 +56,7 @@ public class CityDAOMySQL implements CityDAO{
             
             while(rs.next()){
                 //get info for Country objects from database before building City objects
-                Country country=null;
+                Country country=new Country();
                 
                 try{
                     country = new CountryDAOMySQL().getCountryByID(rs.getInt("countryId"));
@@ -182,23 +182,24 @@ public class CityDAOMySQL implements CityDAO{
         if(city.getCountryID()==-1){ //no database ID yet assigned
             CountryDAO countryDAO = new CountryDAOMySQL();
             countryDAO.createCountry((Country)city.getCountry());
-        } else {
-            String query = "INSERT INTO city (cityId, city, countryId, createDate, createdBy, lastUpdate, lastUpdateBy) VALUES ("+
-                            nextID+", '"+
-                            city.getCityName()+"', "+
-                            city.getCountryID()+", '"+
-                            city.getAuditInfo().getCreatedDate()+"', '"+
-                            city.getAuditInfo().getCreatedBy()+"', '"+
-                            city.getAuditInfo().getLastUpdate()+"', '"+
-                            city.getAuditInfo().getLastUpdatedBy()+"')";
-            try{
-                Statement stmt = this.conn.createStatement();
-                stmt.execute(query);
-                city.setCityID(nextID); //update referenced city object with ID from database
-            }catch(SQLException ex){
-                ex.printStackTrace();
-            }
+        } 
+        
+        String query = "INSERT INTO city (cityId, city, countryId, createDate, createdBy, lastUpdate, lastUpdateBy) VALUES ("+
+                        nextID+", '"+
+                        city.getCityName()+"', "+
+                        city.getCountryID()+", '"+
+                        city.getAuditInfo().getCreatedDate()+"', '"+
+                        city.getAuditInfo().getCreatedBy()+"', '"+
+                        city.getAuditInfo().getLastUpdate()+"', '"+
+                        city.getAuditInfo().getLastUpdatedBy()+"')";
+        try{
+            Statement stmt = this.conn.createStatement();
+            stmt.execute(query);
+            city.setCityID(nextID); //update referenced city object with ID from database
+        }catch(SQLException ex){
+            ex.printStackTrace();
         }
+        
     }
 
     @Override
