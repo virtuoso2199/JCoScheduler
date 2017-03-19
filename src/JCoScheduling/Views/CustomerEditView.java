@@ -6,9 +6,9 @@
 package JCoScheduling.Views;
 
 import JCoScheduling.Controllers.CustomerControllerInterface;
+import JCoScheduling.Exceptions.FormatException;
 import JCoScheduling.Models.Customer;
 import JCoScheduling.Models.CustomerModelInterface;
-import JCoScheduling.Models.CustomerObserver;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -62,28 +62,7 @@ public class CustomerEditView implements CustomerViewInterface{
         this.customer.registerObserver(this);
 
     }
-    
-    /**
-     * showAddView shows Stage used to add a new customer to the database
-     */
-    
-//    public void showAddView(){
-//        customerStage.show();
-//    }
-//    
-//    public void showEditView(){
-//        //uses same view but populates field with customer data
-//
-//    }
-//    
-//    public void showListView(){
-//        
-//    }
-    
-    /**
-     * buildCustomerWindow returns a stage containing all the necessary elements for the Customer Maintenance Form
-     * @return Stage of Customer Maintenance Form
-     */
+
     private void buildView(){
         customerStage = new Stage();
         
@@ -102,14 +81,14 @@ public class CustomerEditView implements CustomerViewInterface{
         root.add(lblFirstName,0,1);
         
         txtFirstName = new TextField();
-        txtFirstName.setText(customer.getCustomerName().trim().substring(0, customer.getCustomerName().indexOf(" "))); //gets customer name up to space
+        txtFirstName.setText(customer.getFirstName()); //gets customer name up to space
         root.add(txtFirstName,1,1);
         
         lblLastName = new Label("Last Name");
         root.add(lblLastName,2,1);
         
         txtLastName = new TextField();
-        txtLastName.setText(customer.getCustomerName().trim().substring(customer.getCustomerName().lastIndexOf(" "),customer.getCustomerName().length()-1));
+        txtLastName.setText(customer.getLastName());
         root.add(txtLastName, 3,1);
         
         lblAddr1 = new Label("Address Line 1");
@@ -130,14 +109,14 @@ public class CustomerEditView implements CustomerViewInterface{
         root.add(lblCity,0,4);
         
         txtCity = new TextField();
-        txtCity.setText(customer.getAddress().getCity().getCityName().trim().substring(0, customer.getAddress().getCity().getCityName().indexOf(",")));
+        txtCity.setText(customer.getAddress().getCity().getCityName());
         root.add(txtCity,1,4);
         
         lblState = new Label("State");
         root.add(lblState,2,4);
         
         txtState = new TextField();
-        txtState.setText(customer.getAddress().getCity().getCityName().trim().substring(customer.getAddress().getCity().getCityName().indexOf(",")+1,customer.getAddress().getCity().getCityName().length()-1));
+        txtState.setText(customer.getAddress().getCity().getState());
         txtState.setPrefWidth(60);
         root.add(txtState,3,4);
         
@@ -157,6 +136,15 @@ public class CustomerEditView implements CustomerViewInterface{
         root.add(txtPhone,1,5);
         
         btnSave = new Button("Save");
+        btnSave.setOnAction(event->{
+            try{
+                customer.setName(lblLastName.getText()+", "+lblFirstName.getText());
+                
+            } catch(FormatException ex){
+                
+            }
+            controller.updateCustomer();
+        });
         root.add(btnSave,0,6);
         
         btnClear = new Button("Clear");

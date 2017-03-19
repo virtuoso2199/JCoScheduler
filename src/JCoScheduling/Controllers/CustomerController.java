@@ -18,7 +18,6 @@ import JCoScheduling.Exceptions.NotFoundException;
 import JCoScheduling.Models.Address;
 import JCoScheduling.Models.AddressModelInterface;
 import JCoScheduling.Models.AuditInfo;
-import JCoScheduling.Models.AuditInfoModelInterface;
 import JCoScheduling.Models.City;
 import JCoScheduling.Models.CityModelInterface;
 import JCoScheduling.Models.Country;
@@ -26,6 +25,7 @@ import JCoScheduling.Models.CountryModelInterface;
 import JCoScheduling.Models.CustomerModelInterface;
 import JCoScheduling.Models.UserModelInterface;
 import JCoScheduling.Views.CustomerAddView;
+import JCoScheduling.Views.CustomerEditView;
 import JCoScheduling.Views.CustomerListView;
 import JCoScheduling.Views.CustomerViewInterface;
 import java.time.LocalDateTime;
@@ -63,7 +63,13 @@ public class CustomerController implements CustomerControllerInterface{
     
     @Override
     public void showCustomerListView(){
-        this.customerView = new CustomerListView(this, customer);
+        this.customerView = new CustomerListView(this);
+        customerView.show();
+    }
+    
+    @Override
+    public void showCustomerEditView(CustomerModelInterface customer){
+        this.customerView = new CustomerEditView(this,customer);
         customerView.show();
     }
     
@@ -78,10 +84,10 @@ public class CustomerController implements CustomerControllerInterface{
     
     public ObservableList<CustomerModelInterface> getAllCustomers(){
         
-        ObservableList customers = FXCollections.observableArrayList();
+        ObservableList<CustomerModelInterface> customers = FXCollections.observableArrayList();
         
         for(CustomerModelInterface customer: customerDAO.getAllCustomers()){
-            customers.add(customer.getCustomerName());
+            customers.add(customer);
         }
         
         return customers;

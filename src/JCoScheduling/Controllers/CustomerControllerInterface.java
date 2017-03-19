@@ -20,6 +20,8 @@ public interface CustomerControllerInterface {
     
     public void showCustomerListView();
     
+    public void showCustomerEditView(CustomerModelInterface customer);
+    
     public void updateCustomer();
     
     public void createCustomer(CustomerModelInterface customer);

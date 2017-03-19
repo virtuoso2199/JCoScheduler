@@ -90,9 +90,12 @@ public class MainWindow {
         });
         root.add(btnCalendar,2,1);
         
+        Button btnReports = new Button("Reports");
+        root.add(btnReports,3,1);
+        
         Button btnQuit = new Button("Quit");
         btnQuit.setOnAction(event->stage.close());
-        root.add(btnQuit,3,1);
+        root.add(btnQuit,4,1);
         
         Scene scene = new Scene(root,500,400);
         

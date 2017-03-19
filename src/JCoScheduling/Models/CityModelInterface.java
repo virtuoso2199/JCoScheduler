@@ -16,6 +16,8 @@ public interface CityModelInterface {
     public void setCityID(int cityID);
 
     public String getCityName();
+    
+    public String getState();
 
     public void setCityName(String cityName);
 

@@ -75,6 +75,32 @@ public class Customer implements CustomerModelInterface, AddressObserver, AuditI
         return customerName;
     }
     
+    public String getFirstName(){
+        String firstName;
+        
+        
+        if(this.customerName.indexOf(",")>0){
+            firstName = this.customerName.substring(this.customerName.indexOf(",")+1, this.customerName.length()-1);
+        } else {
+            firstName = this.customerName;
+        }
+        return firstName;
+    }
+    
+    public String getLastName(){
+        String lastName;
+        
+        //test for presence of comma; undefined customer objects won't have one
+        if(this.customerName.indexOf(",")>0){
+            lastName = this.customerName.substring(0, this.customerName.indexOf(","));
+        } else {
+            lastName = "";
+        }
+        
+        return lastName;
+        
+    }
+    
     public String getPrpCustomerName(){
         return this.prpCustomerName.get();
     }
@@ -154,7 +180,7 @@ public class Customer implements CustomerModelInterface, AddressObserver, AuditI
 
     @Override
     public String toString() {
-        return "Customer{" + "customerID=" + customerID + ", customerName=" + customerName + ", address=" + address + ", activeInd=" + activeInd + ", auditInfo=" + auditInfo + ", observers=" + observers + ", propCustomerName=" + prpCustomerName + ", propCustomerID=" + propCustomerID + '}';
+        return customerName + " ("+customerID +")";
     }
     
     

@@ -30,24 +30,21 @@ public class CustomerListView implements CustomerViewInterface{
     
     private Stage customerListView;
     private CustomerControllerInterface controller;
-    private CustomerModelInterface customer;
-    private final ObservableList customerList;
+    private final ObservableList<CustomerModelInterface> customerList;
     
     //UI Controls
     GridPane root;
     Label lblTitle;
-    ListView tvCustomerList;
+    ListView lvCustomerList;
     TableColumn tcCustID;
     TableColumn tcCustName;
     Button btnAdd;
     Button btnOK;
     Scene scene;
     
-    public CustomerListView(CustomerControllerInterface controller, CustomerModelInterface customer){
+    public CustomerListView(CustomerControllerInterface controller){
         
         this.controller = controller;
-        this.customer = customer;
-        this.customer.registerObserver(this);
         this.customerList = controller.getAllCustomers();
     }
     
@@ -67,18 +64,17 @@ public class CustomerListView implements CustomerViewInterface{
         
         //get customer list from controller to populate list with
         
-        tvCustomerList = new ListView();
+        lvCustomerList = new ListView();
+        lvCustomerList.setOnMouseClicked(e->{
+                if (e.getClickCount()>1){ //load customer for editing when double clicked
+                    controller.showCustomerEditView((CustomerModelInterface)lvCustomerList.getSelectionModel().getSelectedItem());
+                    customerListView.close();
+                }
+            });
+        lvCustomerList.setItems(this.customerList);
+       
         
-        tvCustomerList.setItems(this.customerList);
-//        tcCustID = new TableColumn("ID");
-//        tcCustID.setCellValueFactory(new PropertyValueFactory("propCustomerID"));
-//        tcCustName = new TableColumn("Name");
-//        tcCustName.setMinWidth(100);
-//        tcCustName.setCellValueFactory(new PropertyValueFactory<CustomerModelInterface,String>("prpCustomerName"));
-//        tvCustomerList.getColumns().addAll(tcCustName);
-        
-        
-        root.add(tvCustomerList, 0, 1,5,10);
+        root.add(lvCustomerList, 0, 1,5,10);
         
         btnAdd = new Button("Add");
         btnAdd.setOnAction(e->{
@@ -117,6 +113,8 @@ public class CustomerListView implements CustomerViewInterface{
 
     @Override
     public void updateCustomer(Customer customer) {
-        this.update();
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+
 }

@@ -53,7 +53,25 @@ public class City implements CityModelInterface, CountryObserver, AuditInfoObser
     }
 
     public String getCityName() {
+        String cityName;
+        if(this.cityName.indexOf(",")>0){
+             cityName = this.cityName.substring(0, this.cityName.indexOf(","));
+        } else {
+            cityName = this.cityName;
+        }
         return cityName;
+    }
+    
+    public String getState(){
+        String state; 
+        
+        if(this.cityName.indexOf(",")>0){
+            state = this.cityName.substring(this.cityName.indexOf(",")+1, this.cityName.length()-1);
+        } else {
+            state = "";
+        }
+        
+        return state;
     }
 
     public void setCityName(String cityName) {

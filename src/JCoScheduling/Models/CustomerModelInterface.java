@@ -16,6 +16,10 @@ public interface CustomerModelInterface {
      public int getCustomerID();
 
     public String getCustomerName();
+    
+    public String getFirstName();
+    
+    public String getLastName();
 
     public AddressModelInterface getAddress();
 
