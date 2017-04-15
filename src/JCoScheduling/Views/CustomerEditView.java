@@ -54,6 +54,7 @@ public class CustomerEditView implements CustomerViewInterface{
     private Button btnSave;
     private Button btnClear;
     private Button btnCancel;
+    private Button btnDelete;
     private Scene scene;
     
     public CustomerEditView(CustomerControllerInterface controller, CustomerModelInterface customer){
@@ -170,6 +171,15 @@ public class CustomerEditView implements CustomerViewInterface{
         
         root.add(btnCancel,2,6);
         
+        btnDelete = new Button("Delete");
+        btnDelete.setOnAction(event->{
+            controller.deleteCustomer(customer);
+        });
+        
+        root.add(btnDelete,3,6);
+        
+        
+        
         scene = new Scene(root,800,350);
         
         customerStage.setScene(scene);
@@ -193,5 +203,9 @@ public class CustomerEditView implements CustomerViewInterface{
     @Override
     public void update() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public void close(){
+        customerStage.close();
     }
 }

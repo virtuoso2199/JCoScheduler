@@ -209,4 +209,8 @@ public class CustomerAddView implements CustomerViewInterface{
     public void update() {
         //no fields to update: no action required
     }
+    
+    public void close(){
+        customerStage.close();
+    }
 }

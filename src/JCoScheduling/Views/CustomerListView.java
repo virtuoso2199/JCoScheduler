@@ -115,6 +115,10 @@ public class CustomerListView implements CustomerViewInterface{
     public void updateCustomer(Customer customer) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    public void close(){
+        customerListView.close();
+    }
 
 
 }

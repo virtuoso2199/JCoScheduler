@@ -29,8 +29,12 @@ import JCoScheduling.Views.CustomerEditView;
 import JCoScheduling.Views.CustomerListView;
 import JCoScheduling.Views.CustomerViewInterface;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 
 /**
  *
@@ -146,6 +150,31 @@ public class CustomerController implements CustomerControllerInterface{
     
     public UserModelInterface getUser(){
         return this.user;
+    }
+    
+    public void deleteCustomer(CustomerModelInterface customer){
+        //first, prompt the user to see if they really meant to delete the customer
+        Alert deleteConfirm = new Alert(AlertType.CONFIRMATION);
+        deleteConfirm.setTitle("Confirm Customer Delete");
+        deleteConfirm.setHeaderText("Confirm Customer Deletion");
+        deleteConfirm.setContentText("Are you sure you want to delete this customer?");
+        customerView.close();
+        
+        Optional<ButtonType> result = deleteConfirm.showAndWait();
+        if (result.get()==ButtonType.OK){
+            try{
+                customerDAO.deleteCustomer(customer);
+                customerView = new CustomerListView(this);
+                customerView.show();
+            }catch (NotFoundException ex){
+                ex.printStackTrace();
+            }
+        }else {
+            //return to edit view; the user clicked cancel
+            customerView.show(); 
+        }
+        
+        
     }
     
     

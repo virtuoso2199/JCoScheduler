@@ -13,6 +13,9 @@ import JCoScheduling.Models.UserModelInterface;
 import JCoScheduling.Models.UserObserver;
 import JCoScheduling.Views.MainWindow;
 import java.util.Locale;
+import static java.util.Locale.ENGLISH;
+import static java.util.Locale.FRENCH;
+import java.util.ResourceBundle;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -40,11 +43,12 @@ public class C195Final2 extends Application implements UserObserver{
     private UserModelInterface user;        
     private UserControllerInterface userController; //to be assigned later when User object can be built from form fields
     Locale userLocale;
+    ResourceBundle rb;
     
     
     @Override
     public void start(Stage primaryStage) {
-        
+
         user = new User();
         user.registerObserver((UserObserver)this);
         userController = new UserController(new UserDAOMySQL(),primaryStage,user);
@@ -96,21 +100,30 @@ public class C195Final2 extends Application implements UserObserver{
         ChoiceBox choiceLanguage = new ChoiceBox(FXCollections.observableArrayList("English","Français","Español")); 
 //        choiceLanguage.setPrefSize(120,20);
         choiceLanguage.setTooltip(new Tooltip("Select a language")); 
+        Label lblLocation = new Label("Location:"); //when this changes, change the timezone of the program
         choiceLanguage.setOnAction(event -> {//when this changes, change the language of the fields on the form
+                System.out.println(choiceLanguage.getSelectionModel().getSelectedItem()); //DEBUG ONLY
                 if(choiceLanguage.getSelectionModel().getSelectedItem()=="English"){
-                    
+                    Locale.setDefault(new Locale("en"));
+                    this.rb = ResourceBundle.getBundle("LoginFields",Locale.getDefault());
                 } else if(choiceLanguage.getSelectionModel().getSelectedItem()=="Français"){
-            
+                    Locale.setDefault(new Locale("fr"));
+                    this.rb = ResourceBundle.getBundle("LoginFields",Locale.getDefault());
                 } else if(choiceLanguage.getSelectionModel().getSelectedItem()=="Español"){
-                    
+                    Locale.setDefault(new Locale("es"));
+                    this.rb = ResourceBundle.getBundle("LoginFields",Locale.getDefault());
                 }
+                lblUsername.setText(this.rb.getString("username"));
+                lblPassword.setText(this.rb.getString("password"));
+                lblLanguage.setText(this.rb.getString("language"));
+                lblLocation.setText(this.rb.getString("location"));
             });
         root.add(choiceLanguage,1,3);
 //        hboxLanguage.getChildren().addAll(lblLanguage,choiceLanguage);
 //        hboxLanguage.setSpacing(10);
         
 //        HBox hboxLocation = new HBox();
-        Label lblLocation = new Label("Location:"); //when this changes, change the timezone of the program
+
 //        lblLocation.setPrefSize(40,20);
         root.add(lblLocation,0,4);
         ChoiceBox choiceLocation = new ChoiceBox(FXCollections.observableArrayList("Phoenix","New York","London"));
@@ -132,7 +145,7 @@ public class C195Final2 extends Application implements UserObserver{
                     primaryStage.close();
                 } else {
                     //user could not be authenticated, show error
-                    lblInfo.setText("Authentication failed for user "+ user.getUsername()+"! Please try again");
+                    lblInfo.setText(this.rb.getString("loginFail"));
                     System.out.println(txtUsername.getText()+":"+txtPassword.getText());
                     txtUsername.clear();
                     txtPassword.clear();

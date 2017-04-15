@@ -16,4 +16,6 @@ public interface CustomerViewInterface extends CustomerObserver{
     public void show();
     
     public void update();
+    
+    public void close();
 }

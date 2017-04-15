@@ -66,7 +66,7 @@ public class City implements CityModelInterface, CountryObserver, AuditInfoObser
         String state; 
         
         if(this.cityName.indexOf(",")>0){
-            state = this.cityName.substring(this.cityName.indexOf(",")+1, this.cityName.length()-1);
+            state = this.cityName.substring(this.cityName.indexOf(",")+2, this.cityName.length());
         } else {
             state = "";
         }

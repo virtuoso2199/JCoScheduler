@@ -80,7 +80,7 @@ public class Customer implements CustomerModelInterface, AddressObserver, AuditI
         
         
         if(this.customerName.indexOf(",")>0){
-            firstName = this.customerName.substring(this.customerName.indexOf(",")+1, this.customerName.length()-1);
+            firstName = this.customerName.substring(this.customerName.indexOf(",")+2, this.customerName.length());
         } else {
             firstName = this.customerName;
         }

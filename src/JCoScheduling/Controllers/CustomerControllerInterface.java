@@ -26,6 +26,8 @@ public interface CustomerControllerInterface {
     
     public void createCustomer(CustomerModelInterface customer);
     
+    public void deleteCustomer(CustomerModelInterface customer);
+    
     public ObservableList<CustomerModelInterface> getAllCustomers();
     
     public AddressModelInterface buildAddress(String addr1, String addr2, String city, String state, String zip, String country, String phone);
