@@ -93,15 +93,24 @@ public class C195Final2 extends Application implements UserObserver{
         Label lblLanguage = new Label("Language:");
 //        lblLanguage.setPrefSize(40,20);
         root.add(lblLanguage,0,3);
-        ChoiceBox choiceLanguage = new ChoiceBox(FXCollections.observableArrayList("English","Français")); 
+        ChoiceBox choiceLanguage = new ChoiceBox(FXCollections.observableArrayList("English","Français","Español")); 
 //        choiceLanguage.setPrefSize(120,20);
-        choiceLanguage.setTooltip(new Tooltip("Select a language"));
+        choiceLanguage.setTooltip(new Tooltip("Select a language")); 
+        choiceLanguage.setOnAction(event -> {//when this changes, change the language of the fields on the form
+                if(choiceLanguage.getSelectionModel().getSelectedItem()=="English"){
+                    
+                } else if(choiceLanguage.getSelectionModel().getSelectedItem()=="Français"){
+            
+                } else if(choiceLanguage.getSelectionModel().getSelectedItem()=="Español"){
+                    
+                }
+            });
         root.add(choiceLanguage,1,3);
 //        hboxLanguage.getChildren().addAll(lblLanguage,choiceLanguage);
 //        hboxLanguage.setSpacing(10);
         
 //        HBox hboxLocation = new HBox();
-        Label lblLocation = new Label("Location:");
+        Label lblLocation = new Label("Location:"); //when this changes, change the timezone of the program
 //        lblLocation.setPrefSize(40,20);
         root.add(lblLocation,0,4);
         ChoiceBox choiceLocation = new ChoiceBox(FXCollections.observableArrayList("Phoenix","New York","London"));
@@ -147,6 +156,7 @@ public class C195Final2 extends Application implements UserObserver{
                      this.user.setUsername(txtUsername.getText());
                      this.user.setPassword(txtPassword.getText());
                      if(userController.validateLogin()){ //user authenticated
+                         JCoLogger.recordLogin(this.user.getUsername());
                          new MainWindow(this.user);
                          primaryStage.close();
                      } else {
