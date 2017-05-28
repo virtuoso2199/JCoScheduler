@@ -5,7 +5,7 @@
  */
 package JCoScheduling.Views;
 
-import JCoScheduling.Views.MainWindow;
+import JCoScheduling.Models.Appointment;
 import javafx.collections.FXCollections;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -83,6 +83,9 @@ public class AppointmentView {
         
         
         Button btnSave = new Button("Save");
+        btnSave.setOnAction(event->{
+           Appointment appt = new  Appointment();
+        });
 //        root.add(btnSave,0,4);
         Button btnClear = new Button("Clear");
 //        root.add(btnClear,1,4);
