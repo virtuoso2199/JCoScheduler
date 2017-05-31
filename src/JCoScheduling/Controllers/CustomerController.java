@@ -74,10 +74,12 @@ public class CustomerController implements CustomerControllerInterface{
     @Override
     public void showCustomerEditView(CustomerModelInterface customer){
         this.customerView = new CustomerEditView(this,customer);
+        this.customer = customer;
         customerView.show();
     }
     
-    public void updateCustomer(){
+    public void updateCustomer(CustomerModelInterface customer){
+        this.customer = customer;
         try{
             customerDAO.updateCustomer(customer);
         } catch (NotFoundException ex){

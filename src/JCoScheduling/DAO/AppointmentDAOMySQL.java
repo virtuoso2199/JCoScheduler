@@ -70,8 +70,8 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
                                                  rs.getString("location"),
                                                  rs.getString("contact"),
                                                  rs.getString("url"),
-                                                 rs.getTimestamp("start").toLocalDateTime().atZone(ZoneId.of("America/Montreal")), //appointments stored at EST in DB
-                                                 rs.getTimestamp("end").toLocalDateTime().atZone(ZoneId.of("America/Montreal")),
+                                                 rs.getTimestamp("start").toLocalDateTime().atZone(ZoneId.of("UTC")), //appointments stored at EST in DB
+                                                 rs.getTimestamp("end").toLocalDateTime().atZone(ZoneId.of("UTC")),
                                                  new AuditInfo(rs.getString("createdBy"),rs.getTimestamp("createDate").toLocalDateTime(),rs.getString("lastUpdateBy"),rs.getTimestamp("lastUpdate").toLocalDateTime()));
                 apptList.add(appointment);
                
@@ -108,8 +108,8 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
                                                  rs.getString("location"),
                                                  rs.getString("contact"),
                                                  rs.getString("url"),
-                                                 rs.getTimestamp("start").toLocalDateTime().atZone(ZoneId.of("America/Montreal")), //appointments stored at EST in DB
-                                                 rs.getTimestamp("end").toLocalDateTime().atZone(ZoneId.of("America/Montreal")),
+                                                 rs.getTimestamp("start").toLocalDateTime().atZone(ZoneId.of("UTC")), //appointments stored at EST in DB
+                                                 rs.getTimestamp("end").toLocalDateTime().atZone(ZoneId.of("UTC")),
                                                  new AuditInfo(rs.getString("createdBy"),rs.getTimestamp("createDate").toLocalDateTime(),rs.getString("lastUpdateBy"),rs.getTimestamp("lastUpdate").toLocalDateTime()));
                
             }
@@ -145,8 +145,8 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
                                                  rs.getString("location"),
                                                  rs.getString("contact"),
                                                  rs.getString("url"),
-                                                 rs.getTimestamp("start").toLocalDateTime().atZone(ZoneId.of("America/Montreal")), //appointments stored at EST in DB
-                                                 rs.getTimestamp("end").toLocalDateTime().atZone(ZoneId.of("America/Montreal")),
+                                                 rs.getTimestamp("start").toLocalDateTime().atZone(ZoneId.of("UTC")), //appointments stored at EST in DB
+                                                 rs.getTimestamp("end").toLocalDateTime().atZone(ZoneId.of("UTC")),
                                                  new AuditInfo(rs.getString("createdBy"),rs.getTimestamp("createDate").toLocalDateTime(),rs.getString("lastUpdateBy"),rs.getTimestamp("lastUpdate").toLocalDateTime()));
                 apptList.add(appointment);
                
@@ -172,8 +172,8 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
                                                  rs.getString("location"),
                                                  rs.getString("contact"),
                                                  rs.getString("url"),
-                                                 rs.getTimestamp("start").toLocalDateTime().atZone(ZoneId.of("America/Montreal")), //appointments stored at EST in DB
-                                                 rs.getTimestamp("end").toLocalDateTime().atZone(ZoneId.of("America/Montreal")),
+                                                 rs.getTimestamp("start").toLocalDateTime().atZone(ZoneId.of("UTC")), //appointments stored at EST in DB
+                                                 rs.getTimestamp("end").toLocalDateTime().atZone(ZoneId.of("UTC")),
                                                  new AuditInfo(rs.getString("createdBy"),rs.getTimestamp("createDate").toLocalDateTime(),rs.getString("lastUpdateBy"),rs.getTimestamp("lastUpdate").toLocalDateTime()));
                 apptList.add(appointment);
                
@@ -210,8 +210,8 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
                                                  rs.getString("location"),
                                                  rs.getString("contact"),
                                                  rs.getString("url"),
-                                                 rs.getTimestamp("start").toLocalDateTime().atZone(ZoneId.of("America/Montreal")), //appointments stored at EST in DB
-                                                 rs.getTimestamp("end").toLocalDateTime().atZone(ZoneId.of("America/Montreal")),
+                                                 rs.getTimestamp("start").toLocalDateTime().atZone(ZoneId.of("UTC")), //appointments stored at EST in DB
+                                                 rs.getTimestamp("end").toLocalDateTime().atZone(ZoneId.of("UTC")),
                                                  new AuditInfo(rs.getString("createdBy"),rs.getTimestamp("createDate").toLocalDateTime(),rs.getString("lastUpdateBy"),rs.getTimestamp("lastUpdate").toLocalDateTime()));
                 apptList.add(appointment);
                
@@ -225,7 +225,7 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
     @Override
     public ArrayList<Appointment> getApptByCreateDate(ZonedDateTime startDate, ZonedDateTime endDate) {
         ArrayList<Appointment> apptList = new ArrayList<>();
-        String query = "SELECT * FROM appointment WHERE createDate BETWEEN '"+startDate.toLocalDateTime()+"' AND '"+endDate.toLocalDateTime()+"'";
+        String query = "SELECT * FROM appointment WHERE createDate BETWEEN '"+startDate.withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime()+"' AND '"+endDate.withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime()+"'";
         try {
             Statement stmt = this.conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
@@ -248,8 +248,8 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
                                                  rs.getString("location"),
                                                  rs.getString("contact"),
                                                  rs.getString("url"),
-                                                 rs.getTimestamp("start").toLocalDateTime().atZone(ZoneId.of("America/Montreal")), //appointments stored at EST in DB
-                                                 rs.getTimestamp("end").toLocalDateTime().atZone(ZoneId.of("America/Montreal")),
+                                                 rs.getTimestamp("start").toLocalDateTime().atZone(ZoneId.of("UTC")), //appointments stored at EST in DB
+                                                 rs.getTimestamp("end").toLocalDateTime().atZone(ZoneId.of("UTC")),
                                                  new AuditInfo(rs.getString("createdBy"),rs.getTimestamp("createDate").toLocalDateTime(),rs.getString("lastUpdateBy"),rs.getTimestamp("lastUpdate").toLocalDateTime()));
                 apptList.add(appointment);
                
@@ -280,7 +280,7 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
             CustomerDAO custDAO = new CustomerDAOMySQL();
             custDAO.createCustomer(appointment.getCustomer());
         } else {
-            String query = "INSERT INTO appointment (appointmentId, customerId,title,description, location, contact, url, start, end, createdBy, lastUpdate, lastUpdateBy) VALUES ("+
+            String query = "INSERT INTO appointment (appointmentId, customerId,title,description, location, contact, url, start, end, createDate, createdBy, lastUpdate, lastUpdateBy) VALUES ("+
                             nextID+", "+
                             appointment.getCustomer().getCustomerID()+", '"+
                             appointment.getTitle()+"', '"+
@@ -288,8 +288,8 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
                             appointment.getLocation()+"', '"+
                             appointment.getContact()+"', '"+
                             appointment.getURL()+"', '"+
-                            appointment.getStartTime().toLocalDateTime()+"', '"+
-                            appointment.getEndTime().toLocalDateTime()+"', '"+
+                            appointment.getStartTimeUTC().toLocalDateTime()+"', '"+
+                            appointment.getEndTimeUTC().toLocalDateTime()+"', '"+
                             appointment.getAuditInfo().getCreatedDate()+"', '"+
                             appointment.getAuditInfo().getCreatedBy()+"', '"+
                             appointment.getAuditInfo().getLastUpdate()+"', '"+
@@ -316,8 +316,8 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
                                         "location = '"+appointment.getLocation()+"', "+
                                         "contact = '"+appointment.getContact()+"', "+
                                         "url = '"+appointment.getURL()+"', "+
-                                        "start = '"+appointment.getStartTime().toLocalDateTime()+"', "+
-                                        "end = '"+appointment.getEndTime().toLocalDateTime()+"', "+
+                                        "start = '"+appointment.getStartTimeUTC().toLocalDateTime()+"', "+
+                                        "end = '"+appointment.getEndTimeUTC().toLocalDateTime()+"', "+
                                         "lastUpdate = '"+appointment.getAuditInfo().getLastUpdate()+"', "+
                                         "lastUpdateBy = '"+appointment.getAuditInfo().getLastUpdatedBy()+"' WHERE appointmentId = "+appointment.getApptID();
         

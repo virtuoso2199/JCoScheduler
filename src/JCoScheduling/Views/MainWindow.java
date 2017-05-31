@@ -5,11 +5,14 @@
  */
 package JCoScheduling.Views;
 
+import JCoScheduling.Controllers.AppointmentController;
+import JCoScheduling.Controllers.AppointmentControllerInterface;
 import JCoScheduling.Controllers.CustomerController;
 import JCoScheduling.DAO.UserDAOMySQL;
 import JCoScheduling.Exceptions.NotFoundException;
 import JCoScheduling.Models.Customer;
 import JCoScheduling.Models.UserModelInterface;
+import java.time.ZoneId;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -28,9 +31,18 @@ import javafx.stage.Stage;
 public class MainWindow {
     private Stage mainWindow;
     private UserModelInterface user;
+    private ZoneId userTimezone;
+    
+    public MainWindow(UserModelInterface user, ZoneId userTz){
+        this.user = user;
+        this.userTimezone = userTz;
+        mainWindow = buildMainWindow();
+        mainWindow.show();
+    }
     
     public MainWindow(UserModelInterface user){
         this.user = user;
+        this.userTimezone = ZoneId.of("America/New_York"); //default to NYC if not provided
         mainWindow = buildMainWindow();
         mainWindow.show();
     }
@@ -73,19 +85,21 @@ public class MainWindow {
         });
         root.add(btnCustomer,0,1);
         
-        Button btnAppointment = new Button("Appointments");
+        Button btnAppointment = new Button("Add Appointment");
         btnAppointment.setOnAction(event->{
-            //show appointment window, hide main
-            Stage apptWindow = AppointmentView.getApptWindow();
-            apptWindow.show();
+            //show appointment add window, hide main
+            AppointmentController ac = new AppointmentController(this.user, this.userTimezone);
+            ac.showAppointmentMaintenanceView();
+//            Stage apptWindow = AppointmentView.getApptWindow();
+//            apptWindow.show();
             stage.close();
         });
         root.add(btnAppointment,1,1);
         
         Button btnCalendar = new Button("Calendar");
         btnCalendar.setOnAction(event->{
-            Stage calendarWindow = WkCalendarWindow.getWkCalWindow();
-            calendarWindow.show();
+            AppointmentControllerInterface ac = new AppointmentController(this.user, this.userTimezone);
+            ac.showCalendarWeekly();
             stage.close();
         });
         root.add(btnCalendar,2,1);

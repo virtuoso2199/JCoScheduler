@@ -58,8 +58,8 @@ public class TestAddrDAO {
 //          } catch(NotFoundException ex){
 //              ex.printStackTrace();
 //          }
-        for(Country country:countryDAO.getAllCountries()){
-            System.out.println(country.getCountryName());
+        for(City city:cityDAO.getAllCities()){
+            System.out.println(city.getCityName());
         }
         
 //        AddressDAO addrDAO = new AddressDAOMySQL();

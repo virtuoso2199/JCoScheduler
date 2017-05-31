@@ -5,6 +5,7 @@
  */
 package JCoScheduling.Models;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 
@@ -12,7 +13,7 @@ import java.util.ArrayList;
  *
  * @author M219663
  */
-public class Appointment implements AppointmentModelInterface, CustomerObserver,AuditInfoObserver{
+public class Appointment implements AppointmentModelInterface, CustomerObserver,AuditInfoObserver, Comparable<Appointment>{
     
     private int apptID;
     private CustomerModelInterface customer;
@@ -78,6 +79,21 @@ public class Appointment implements AppointmentModelInterface, CustomerObserver,
     public int getApptID() {
         return apptID;
     }
+    
+    public static ZoneId getZone(String location){
+        
+        ZoneId zone;
+        
+        if (location == "London"){
+                zone = ZoneId.of("Europe/London");
+            }else if (location=="Phoenix"){
+                zone = ZoneId.of("America/Phoenix");
+            }else { //default location is New York
+                zone = ZoneId.of("America/New_York");
+            }
+        
+        return zone;
+    }
 
     public void setApptID(int apptID) {
         this.apptID = apptID;
@@ -141,6 +157,10 @@ public class Appointment implements AppointmentModelInterface, CustomerObserver,
     public ZonedDateTime getStartTime() {
         return startTime;
     }
+    
+    public ZonedDateTime getStartTimeUTC() {
+        return startTime.withZoneSameInstant(ZoneId.of("UTC"));
+    }
 
     public void setStartTime(ZonedDateTime startTime) {
         this.startTime = startTime;
@@ -149,6 +169,10 @@ public class Appointment implements AppointmentModelInterface, CustomerObserver,
 
     public ZonedDateTime getEndTime() {
         return endTime;
+    }
+    
+    public ZonedDateTime getEndTimeUTC() {
+        return endTime.withZoneSameInstant(ZoneId.of("UTC"));
     }
 
     public void setEndTime(ZonedDateTime endTime) {
@@ -190,6 +214,10 @@ public class Appointment implements AppointmentModelInterface, CustomerObserver,
     @Override
     public void updateAuditInfo(AuditInfo auditInfo) {
         this.auditInfo = auditInfo;
+    }
+    
+    public int compareTo(Appointment appointment){
+        return this.getStartTime().compareTo(appointment.getStartTime());
     }
 
 

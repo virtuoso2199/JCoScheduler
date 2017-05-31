@@ -5,6 +5,17 @@
  */
 package JCoScheduling.Views;
 
+import JCoScheduling.Controllers.AppointmentControllerInterface;
+import JCoScheduling.Models.Appointment;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
+import java.util.Collections;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -21,18 +32,27 @@ import javafx.stage.Stage;
  *
  * @author M219663
  */
-public class WkCalendarWindow {
-    private static Stage wkCalWindow;
+public class WkCalendarWindow implements AppointmentViewInterface {
+    private Stage wkCalWindow;
+    private ZoneId userTimezone;
+    private ZonedDateTime viewStartDt;
+    private ZonedDateTime viewStopDt;
+    private ArrayList<Appointment> appts;
+    private AppointmentControllerInterface apptController;
     
-    public static Stage getWkCalWindow(){
-        if(wkCalWindow==null){
-            wkCalWindow = buildWkCalWindow();
-        }
+    public WkCalendarWindow(ZoneId userTz, AppointmentControllerInterface ac){
+        this.userTimezone = userTz;
+        this.apptController = ac;
+        this.viewStartDt = LocalDateTime.of(LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)),LocalTime.of(0, 0)).atZone(userTimezone);
+        this.viewStopDt = LocalDateTime.of(LocalDate.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)),LocalTime.of(23,59,59)).atZone(userTimezone);
+        this.appts = apptController.getApptsByDate(viewStartDt, viewStopDt);
+        Collections.sort(appts);
         
-        return wkCalWindow;
     }
     
-    private static Stage buildWkCalWindow(){
+    
+    
+    private Stage buildWkCalWindow(){
         Stage stage = new Stage();
         
         GridPane root = new GridPane();
@@ -63,7 +83,7 @@ public class WkCalendarWindow {
         Label lblMonday = new Label("Monday");
         mondayFlow.setAlignment(Pos.TOP_CENTER);
         mondayFlow.getChildren().add(lblMonday);
-        root.add(mondayFlow,0,1);
+        
         FlowPane tuesdayFlow = new FlowPane();
         tuesdayFlow.setPrefWidth(100);
         tuesdayFlow.setPrefHeight(700);
@@ -71,7 +91,7 @@ public class WkCalendarWindow {
         Label lblTuesday = new Label("Tuesday");
         tuesdayFlow.setAlignment(Pos.TOP_CENTER);
         tuesdayFlow.getChildren().add(lblTuesday);
-        root.add(tuesdayFlow,1,1);
+        
         FlowPane wednesdayFlow = new FlowPane();
         wednesdayFlow.setPrefWidth(100);
         wednesdayFlow.setPrefHeight(700);
@@ -79,7 +99,7 @@ public class WkCalendarWindow {
         Label lblWednesday = new Label("Wednesday");
         wednesdayFlow.setAlignment(Pos.TOP_CENTER);
         wednesdayFlow.getChildren().add(lblWednesday);
-        root.add(wednesdayFlow,2,1);
+        
         FlowPane thursdayFlow = new FlowPane();
         thursdayFlow.setPrefWidth(100);
         thursdayFlow.setPrefHeight(700);
@@ -87,7 +107,7 @@ public class WkCalendarWindow {
         Label lblThursday = new Label("Thursday");
         thursdayFlow.setAlignment(Pos.TOP_CENTER);
         thursdayFlow.getChildren().add(lblThursday);
-        root.add(thursdayFlow,3,1);
+        
         FlowPane fridayFlow = new FlowPane();
         fridayFlow.setPrefWidth(100);
         fridayFlow.setPrefHeight(700);
@@ -95,7 +115,7 @@ public class WkCalendarWindow {
         Label lblFriday = new Label("Friday");
         fridayFlow.setAlignment(Pos.TOP_CENTER);
         fridayFlow.getChildren().add(lblFriday);
-        root.add(fridayFlow,4,1);
+        
         FlowPane saturdayFlow = new FlowPane();
         saturdayFlow.setPrefWidth(100);
         saturdayFlow.setPrefHeight(700);
@@ -103,7 +123,7 @@ public class WkCalendarWindow {
         Label lblSaturday = new Label("Saturday");
         saturdayFlow.setAlignment(Pos.TOP_CENTER);
         saturdayFlow.getChildren().add(lblSaturday);
-        root.add(saturdayFlow,5,1);
+        
         FlowPane sundayFlow = new FlowPane();
         sundayFlow.setPrefWidth(100);
         sundayFlow.setPrefHeight(700);
@@ -111,7 +131,7 @@ public class WkCalendarWindow {
         Label lblSunday = new Label("Sunday");
         sundayFlow.setAlignment(Pos.TOP_CENTER);
         sundayFlow.getChildren().add(lblSunday);
-        root.add(sundayFlow,6,1);
+        
         
         Button btnMonth = new Button("Month");
         GridPane.setHalignment(btnMonth, HPos.CENTER);
@@ -129,6 +149,47 @@ public class WkCalendarWindow {
         GridPane.setHalignment(btnOK, HPos.CENTER);
         root.add(btnOK,6,2);
         
+        //loop through appointments and add them to the appropriate column
+
+            for(Appointment appt:appts){
+                switch(appt.getStartTime().getDayOfWeek()){
+                    case MONDAY:
+                        mondayFlow.getChildren().add(apptController.makeApptLabel(appt));
+                        break;
+                    case TUESDAY:
+                        tuesdayFlow.getChildren().add(apptController.makeApptLabel(appt));
+                        break;
+                    case WEDNESDAY:
+                        wednesdayFlow.getChildren().add(apptController.makeApptLabel(appt));
+                        break;
+                    case THURSDAY:
+                        thursdayFlow.getChildren().add(apptController.makeApptLabel(appt));
+                        break;
+                    case FRIDAY:
+                        fridayFlow.getChildren().add(apptController.makeApptLabel(appt));
+                        break;
+                    case SATURDAY:
+                        saturdayFlow.getChildren().add(apptController.makeApptLabel(appt));
+                        break;
+                    case SUNDAY:
+                        sundayFlow.getChildren().add(apptController.makeApptLabel(appt));
+                        break;
+                    default:
+                        System.out.println("Appointment day of week could not be determined while rendering weekly view");
+                             
+                }
+            }
+
+        //now that appointments are included, add day columns to view
+        root.add(mondayFlow,0,1);   
+        root.add(tuesdayFlow,1,1);
+        root.add(wednesdayFlow,2,1);
+        root.add(thursdayFlow,3,1);
+        root.add(fridayFlow,4,1);
+        root.add(saturdayFlow,5,1);
+        root.add(sundayFlow,6,1);
+   
+        
         
         
         Scene scene = new Scene(root,800,800);
@@ -137,5 +198,21 @@ public class WkCalendarWindow {
         
         
         return stage;
+    }
+
+    @Override
+    public void show() {
+        this.wkCalWindow = buildWkCalWindow();
+        wkCalWindow.show();
+    }
+
+    @Override
+    public void update() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void close() {
+        this.wkCalWindow.close();
     }
 }

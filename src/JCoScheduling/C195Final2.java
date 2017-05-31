@@ -8,13 +8,13 @@ package JCoScheduling;
 import JCoScheduling.Controllers.UserController;
 import JCoScheduling.Controllers.UserControllerInterface;
 import JCoScheduling.DAO.UserDAOMySQL;
+import JCoScheduling.Models.Appointment;
 import JCoScheduling.Models.User;
 import JCoScheduling.Models.UserModelInterface;
 import JCoScheduling.Models.UserObserver;
 import JCoScheduling.Views.MainWindow;
+import java.time.ZoneId;
 import java.util.Locale;
-import static java.util.Locale.ENGLISH;
-import static java.util.Locale.FRENCH;
 import java.util.ResourceBundle;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -42,6 +42,7 @@ public class C195Final2 extends Application implements UserObserver{
     //create UserController to control the login screen and UserDAO to talk to database for authentication
     private UserModelInterface user;        
     private UserControllerInterface userController; //to be assigned later when User object can be built from form fields
+    private ZoneId userTimezone; 
     Locale userLocale;
     ResourceBundle rb;
     
@@ -129,6 +130,10 @@ public class C195Final2 extends Application implements UserObserver{
         ChoiceBox choiceLocation = new ChoiceBox(FXCollections.observableArrayList("Phoenix","New York","London"));
 //        choiceLocation.setPrefSize(40,20);
         choiceLocation.setTooltip(new Tooltip("Select a location"));
+        choiceLocation.setOnAction(event->{
+            
+            userTimezone = Appointment.getZone(choiceLocation.getSelectionModel().getSelectedItem().toString()); //set timezone to display appointments in, defaulting to New York's if none selected
+        });
         root.add(choiceLocation,1,4);
 //        hboxLocation.getChildren().addAll(lblLocation,choiceLocation);
 //        hboxLocation.setSpacing(20);
@@ -138,10 +143,11 @@ public class C195Final2 extends Application implements UserObserver{
         Button btnOK = new Button("OK");
 //        btnOK.setPrefSize(40,20);
         btnOK.setOnAction((ActionEvent event)->{
+                
                 this.user.setUsername(txtUsername.getText());
                 this.user.setPassword(txtPassword.getText());
                 if(userController.validateLogin()){ //user authenticated
-                    new MainWindow(this.user);
+                    new MainWindow(this.user,userTimezone);
                     primaryStage.close();
                 } else {
                     //user could not be authenticated, show error
@@ -170,7 +176,7 @@ public class C195Final2 extends Application implements UserObserver{
                      this.user.setPassword(txtPassword.getText());
                      if(userController.validateLogin()){ //user authenticated
                          JCoLogger.recordLogin(this.user.getUsername());
-                         new MainWindow(this.user);
+                         new MainWindow(this.user,userTimezone);
                          primaryStage.close();
                      } else {
                          //user could not be authenticated, show error

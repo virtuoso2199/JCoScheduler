@@ -22,7 +22,7 @@ public interface CustomerControllerInterface {
     
     public void showCustomerEditView(CustomerModelInterface customer);
     
-    public void updateCustomer();
+    public void updateCustomer(CustomerModelInterface customer);
     
     public void createCustomer(CustomerModelInterface customer);
     

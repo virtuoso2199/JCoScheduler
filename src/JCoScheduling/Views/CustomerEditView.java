@@ -7,6 +7,7 @@ package JCoScheduling.Views;
 
 import JCoScheduling.Controllers.CustomerControllerInterface;
 import JCoScheduling.Exceptions.FormatException;
+import JCoScheduling.Models.Address;
 import JCoScheduling.Models.Customer;
 import JCoScheduling.Models.CustomerModelInterface;
 import javafx.scene.Scene;
@@ -139,12 +140,15 @@ public class CustomerEditView implements CustomerViewInterface{
         btnSave = new Button("Save");
         btnSave.setOnAction(event->{
             try{
-                customer.setName(lblLastName.getText()+", "+lblFirstName.getText());
+                customer.setName(txtLastName.getText()+", "+txtFirstName.getText());
+                customer.setAddress(controller.buildAddress(txtAddr1.getText(),txtAddr2.getText(),txtCity.getText(),txtState.getText(),txtZip.getText(),"USA",txtPhone.getText()));
                 
             } catch(FormatException ex){
                 
             }
-            controller.updateCustomer();
+            controller.updateCustomer(customer);
+            new MainWindow(controller.getUser());
+            customerStage.close();
         });
         root.add(btnSave,0,6);
         
@@ -202,7 +206,7 @@ public class CustomerEditView implements CustomerViewInterface{
 
     @Override
     public void update() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //Refresh data fields?
     }
     
     public void close(){
