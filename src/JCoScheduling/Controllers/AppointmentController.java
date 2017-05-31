@@ -20,6 +20,7 @@ import JCoScheduling.Views.WkCalendarWindow;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -114,7 +115,8 @@ public class AppointmentController implements AppointmentControllerInterface{
 
     @Override
     public Label makeApptLabel(Appointment appt) {
-        Label lblAppt = new Label(appt.getTitle()+"\n"+appt.getCustomer().getFirstName()+" "+appt.getCustomer().getLastName()+"\n"+appt.getStartTime().withZoneSameInstant(userTimezone).toString());
+        String apptDt = appt.getStartTime().withZoneSameInstant(userTimezone).format(DateTimeFormatter.ofPattern("MM/dd hh:mm a"));
+        Label lblAppt = new Label(appt.getTitle()+"\n"+appt.getCustomer().getFirstName()+" "+appt.getCustomer().getLastName()+"\n"+apptDt);
         lblAppt.setStyle("-fx-border-color:red; -fx-background-color: blue;");
         return lblAppt;
     }

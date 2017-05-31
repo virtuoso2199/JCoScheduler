@@ -78,9 +78,9 @@ public class MonthCalendarWindow {
         
         Button btnWeek = new Button("Week");
         btnWeek.setOnAction(event->{
-            Stage weekView = WkCalendarWindow.getWkCalWindow();
-            weekView.show();
-            stage.close();
+//            Stage weekView = WkCalendarWindow.getWkCalWindow();
+//            weekView.show();
+//            stage.close();
         });
         root.add(btnWeek,0,6);
         
