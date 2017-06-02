@@ -117,7 +117,7 @@ public class AppointmentController implements AppointmentControllerInterface{
     public Label makeApptLabel(Appointment appt) {
         String apptDt = appt.getStartTime().withZoneSameInstant(userTimezone).format(DateTimeFormatter.ofPattern("MM/dd hh:mm a"));
         Label lblAppt = new Label(appt.getTitle()+"\n"+appt.getCustomer().getFirstName()+" "+appt.getCustomer().getLastName()+"\n"+apptDt);
-        lblAppt.setStyle("-fx-border-color:red; -fx-background-color: blue;");
+        lblAppt.setStyle("-fx-border-color:red; -fx-background-color: #e6ffff;");
         return lblAppt;
     }
     
