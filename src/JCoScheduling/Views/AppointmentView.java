@@ -8,11 +8,13 @@ package JCoScheduling.Views;
 import JCoScheduling.Controllers.AppointmentControllerInterface;
 import JCoScheduling.Models.Appointment;
 import JCoScheduling.Models.AppointmentModelInterface;
+import JCoScheduling.Models.Customer;
 import JCoScheduling.Models.CustomerModelInterface;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import javafx.collections.FXCollections;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -31,13 +33,21 @@ import javafx.stage.Stage;
  * @author M219663
  */
 public class AppointmentView implements AppointmentViewInterface{
-    private static Stage apptWindow; 
+    private Stage apptWindow; 
     private AppointmentControllerInterface controller;
     private AppointmentModelInterface appt;
+ 
     
     public AppointmentView(AppointmentControllerInterface controller){
         this.controller = controller;
         this.appt = new Appointment();
+
+    }
+    
+    public AppointmentView(AppointmentControllerInterface controller, AppointmentModelInterface appt){
+        this.controller = controller;
+        this.appt = new Appointment();
+        this.appt = appt;
     }
     
 //    public static Stage getApptWindow(){
@@ -116,7 +126,7 @@ public class AppointmentView implements AppointmentViewInterface{
             appt.setStartTime(startTime); //convert to ZonedDateTime
             appt.setEndTime(startTime.plusMinutes(Long.parseLong(txtLength.getText()))); //add this many minutes to ZonedDateTime above
             controller.updateAppointment(appt);
-            new MainWindow();
+            //new MainWindow();
             stage.close();
         });
 //        root.add(btnSave,0,4);
@@ -125,7 +135,7 @@ public class AppointmentView implements AppointmentViewInterface{
         Button btnCancel = new Button("Cancel");
         btnCancel.setOnAction(event->{
             //return to MainWindow
-            new MainWindow();
+            //new MainWindow();
             stage.close();
         });
 //        root.add(btnCancel,2,4);
@@ -139,8 +149,23 @@ public class AppointmentView implements AppointmentViewInterface{
         stage.setTitle("Appointment Maintenance");
         stage.setScene(scene);
         
+        //if appointment data exists, then pre-populate fields
+        if (this.appt.getApptID()!=-1){ //only run if appointment is being updated from database (i.e. does not have an ID of -1)
+            choiceCustomer.getSelectionModel().select(this.appt.getCustomer()); //Should set the customer to the one in the appointment
+            System.out.println("Customer choices are: "+ choiceCustomer.getItems()); //DEBUG ONLY
+            txtTitle.setText(this.appt.getTitle());
+            choiceLocation.getSelectionModel().select(this.appt.getLocation());
+            txtContact.setText(this.appt.getContact());
+            txtURL.setText(this.appt.getURL());
+            txtApptDt.setText(this.appt.getStartTime().withZoneSameInstant(MainWindow.getTimeZone()).toLocalDate().format(DateTimeFormatter.ISO_DATE)); //database stores appointments in UTC
+            txtTime.setText(this.appt.getStartTime().withZoneSameInstant(MainWindow.getTimeZone()).toLocalTime().format(DateTimeFormatter.ISO_TIME));
+            txtLength.setText(String.valueOf(ChronoUnit.MINUTES.between(this.appt.getStartTime(),this.appt.getEndTime())));
+            txtDescription.setText(this.appt.getDescription());
+        }
+        
         return stage;
     }
+
 
     @Override
     public void show() {

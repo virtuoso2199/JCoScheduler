@@ -21,36 +21,60 @@ import java.util.ArrayList;
  */
 public class SnoozeIncrementDAOMySQL implements SnoozeIncrementDAO{
     
+    private static Connection conn= null;
+    
+    static {
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection("jdbc:mysql://10.0.0.194/U03lv6", "jbowley", "Paw52beh!");
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+        
+    }
+    
      //Database server information
-    private Connection conn = null;
-    private String driver = "com.mysql.jdbc.Driver";
-    private String db = "U03lv6";
-    private String url = "jdbc:mysql://52.206.157.109/" + db;
-    private String user = "U03lv6";
-    private String pass = "53688016198";
+//    private Connection conn = null;
+//    private String driver = "com.mysql.jdbc.Driver";
+//    private String db = "U03lv6";
+//    private String url = "jdbc:mysql://10.0.0.194/" + db;
+//    private String user = "jbowley";
+//    private String pass = "Paw52beh!";
     
     public SnoozeIncrementDAOMySQL(){
          //connect to database when instanced
-        try {
-            Class.forName(driver);
-            this.conn = DriverManager.getConnection(this.url,this.user,this.pass);
-        } catch(Exception ex){
-            ex.printStackTrace();
-        }
+//        try {
+//            Class.forName(driver);
+//            this.conn = DriverManager.getConnection(this.url,this.user,this.pass);
+//        } catch(Exception ex){
+//            ex.printStackTrace();
+//        } 
     }
+    
+//     public void finalize(){
+//        try{
+//            conn.close();
+//        }catch(SQLException ex){
+//            System.out.println("Unable to close database connection.\n");
+//            ex.printStackTrace();
+//        }
+//    }
 
     @Override
     public ArrayList<SnoozeIncrement> getAllIncrements() {
         ArrayList<SnoozeIncrement> incrementList = new ArrayList<>();
         String query = "SELECT * FROM incrementtypes";
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             while(rs.next()){
                 SnoozeIncrement increment = new SnoozeIncrement(rs.getInt("incrementTypeId"),
                                                                 rs.getString("description"));
                 incrementList.add(increment);
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -63,13 +87,15 @@ public class SnoozeIncrementDAOMySQL implements SnoozeIncrementDAO{
         SnoozeIncrement increment = null;
         String query = "SELECT * FROM incrementtypes WHERE incrementTypeId = "+incrementID;
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             while(rs.next()){
                 increment = new SnoozeIncrement(rs.getInt("incrementTypeId"),
                                                 rs.getString("description"));
 
             }
+            
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -82,13 +108,16 @@ public class SnoozeIncrementDAOMySQL implements SnoozeIncrementDAO{
        ArrayList<SnoozeIncrement> incrementList = new ArrayList<>();
         String query = "SELECT * FROM incrementtypes WHERE incrementTypeDescription LIKE '"+incrementDesc+"'";
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             while(rs.next()){
                 SnoozeIncrement increment = new SnoozeIncrement(rs.getInt("incrementTypeId"),
                                                                 rs.getString("description"));
                 incrementList.add(increment);
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -102,12 +131,15 @@ public class SnoozeIncrementDAOMySQL implements SnoozeIncrementDAO{
         int nextNum=0;
         String queryID = "SELECT MAX(incrementTypeId) AS incrementTypeId FROM incrementtypes";
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(queryID);
             
             while(rs.next()){
                 nextNum = rs.getInt("incrementTypeId")+1;
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -117,9 +149,10 @@ public class SnoozeIncrementDAOMySQL implements SnoozeIncrementDAO{
                                             nextNum+", '"+
                                             increment.getDescription()+"')";
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute(query);
             increment.setIncrementID(nextNum); //update object with ID from database
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -129,8 +162,9 @@ public class SnoozeIncrementDAOMySQL implements SnoozeIncrementDAO{
     public void updateIncrement(SnoozeIncrement increment) {
         String query = "UPDATE incrementtypes SET  incrementTypeDescription = '"+increment.getDescription()+"'";
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute(query);
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -140,8 +174,9 @@ public class SnoozeIncrementDAOMySQL implements SnoozeIncrementDAO{
     public void deleteIncrement(SnoozeIncrement increment) {
         String query = "DELETE FROM incrementtypes WHERE incrementTypeId= "+increment.getIncrementID();
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute(query);
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -151,8 +186,9 @@ public class SnoozeIncrementDAOMySQL implements SnoozeIncrementDAO{
     public void deleteIncrement(int incrementID) {
         String query = "DELETE FROM incrementtypes WHERE incrementTypeId= "+incrementID;
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute(query);
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }

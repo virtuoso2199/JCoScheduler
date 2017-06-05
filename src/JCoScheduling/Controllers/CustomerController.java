@@ -28,6 +28,7 @@ import JCoScheduling.Views.CustomerAddView;
 import JCoScheduling.Views.CustomerEditView;
 import JCoScheduling.Views.CustomerListView;
 import JCoScheduling.Views.CustomerViewInterface;
+import JCoScheduling.Views.MainWindow;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import javafx.collections.FXCollections;
@@ -49,19 +50,19 @@ public class CustomerController implements CustomerControllerInterface{
     private AddressDAO addrDAO;
     private UserModelInterface user;
     
-    public CustomerController(CustomerModelInterface customer, UserModelInterface user){
+    public CustomerController(CustomerModelInterface customer){
         this.customer = customer;
         this.customerDAO = new CustomerDAOMySQL();
         this.addrDAO = new AddressDAOMySQL();
         this.cityDAO = new CityDAOMySQL();
         this.countryDAO = new CountryDAOMySQL();
-        this.user = user;
+        this.user = MainWindow.getUser();
         
     }
 
     @Override
     public void showCustomerEntryView() {
-        this.customerView = new CustomerAddView(this, customer);
+        this.customerView = new CustomerAddView(this, customer, this.user);
         customerView.show();
     }
     

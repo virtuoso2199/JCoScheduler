@@ -26,30 +26,51 @@ import java.util.ArrayList;
  */
 public class ReminderDAOMySQL implements ReminderDAO{
     
+    private static Connection conn= null;
+    
+    static {
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection("jdbc:mysql://10.0.0.194/U03lv6", "jbowley", "Paw52beh!");
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+        
+    }
+    
       //Database server information
-    private Connection conn = null;
-    private String driver = "com.mysql.jdbc.Driver";
-    private String db = "U03lv6";
-    private String url = "jdbc:mysql://52.206.157.109/" + db;
-    private String user = "U03lv6";
-    private String pass = "53688016198";
+//    private Connection conn = null;
+//    private String driver = "com.mysql.jdbc.Driver";
+//    private String db = "U03lv6";
+//    private String url = "jdbc:mysql://10.0.0.194/" + db;
+//    private String user = "jbowley";
+//    private String pass = "Paw52beh!";
     
     public ReminderDAOMySQL(){
          //connect to database when instanced
-        try {
-            Class.forName(driver);
-            this.conn = DriverManager.getConnection(this.url,this.user,this.pass);
-        } catch(Exception ex){
-            ex.printStackTrace();
-        }
+//        try {
+//            Class.forName(driver);
+//            this.conn = DriverManager.getConnection(this.url,this.user,this.pass);
+//        } catch(Exception ex){
+//            ex.printStackTrace();
+//        } 
     }
+    
+//     public void finalize(){
+//        try{
+//            conn.close();
+//        }catch(SQLException ex){
+//            System.out.println("Unable to close database connection.\n");
+//            ex.printStackTrace();
+//        }
+//    }
 
     @Override
     public ArrayList<Reminder> getAllReminders() {
         ArrayList<Reminder> remList = new ArrayList<>();
         String query = "SELECT * FROM reminder";
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             
             
@@ -77,6 +98,9 @@ public class ReminderDAOMySQL implements ReminderDAO{
                 remList.add(reminder);
                
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -88,7 +112,7 @@ public class ReminderDAOMySQL implements ReminderDAO{
         Reminder reminder = null;
         String query = "SELECT * FROM reminder WHERE remidnerId = "+reminderID;
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             
             
@@ -115,6 +139,9 @@ public class ReminderDAOMySQL implements ReminderDAO{
                                                  rs.getString("reminderCol"));
                
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -126,7 +153,7 @@ public class ReminderDAOMySQL implements ReminderDAO{
         ArrayList<Reminder> remList = new ArrayList<>();
         String query = "SELECT * FROM reminder WHERE reminderDate BETWEEN '"+startDate.toLocalDateTime()+"' AND '"+endDate.toLocalDateTime()+"'";
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             
             
@@ -154,6 +181,9 @@ public class ReminderDAOMySQL implements ReminderDAO{
                 remList.add(reminder);
                
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -165,7 +195,7 @@ public class ReminderDAOMySQL implements ReminderDAO{
         ArrayList<Reminder> remList = new ArrayList<>();
         String query = "SELECT * FROM reminder WHERE createdBy = '"+user.getUsername()+"'";
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             
             
@@ -193,6 +223,9 @@ public class ReminderDAOMySQL implements ReminderDAO{
                 remList.add(reminder);
                
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -205,12 +238,15 @@ public class ReminderDAOMySQL implements ReminderDAO{
         int nextID=0;
         try {
             String query = "SELECT MAX(reminderId) AS reminderId FROM reminder";
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             
             while(rs.next()){
                 nextID = rs.getInt("reminderId")+1;
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -229,9 +265,10 @@ public class ReminderDAOMySQL implements ReminderDAO{
                             reminder.getAuditInfo().getCreatedDate()+"', '"+
                             reminder.getReminderCol()+"')";
             try{
-                Statement stmt = this.conn.createStatement();
+                Statement stmt = conn.createStatement();
                 stmt.execute(query);
                 reminder.setReminderID(nextID); //update referenced Reminder object with ID from database
+                stmt.closeOnCompletion();
             }catch(SQLException ex){
                 ex.printStackTrace();
             }
@@ -247,8 +284,9 @@ public class ReminderDAOMySQL implements ReminderDAO{
                                         "reminderCol = '"+reminder.getReminderCol()+"', "+"' WHERE reminderId = "+reminder.getReminderID();
         
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute(query);
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -258,8 +296,9 @@ public class ReminderDAOMySQL implements ReminderDAO{
     public void deleteReminder(Reminder reminder) {
         String query = "DELETE FROM reminder WHERE reminderId = "+reminder.getReminderID();
         try{
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute(query);
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -269,8 +308,9 @@ public class ReminderDAOMySQL implements ReminderDAO{
     public void deleteReminder(int reminderID) {
         String query = "DELETE FROM reminder WHERE reminderId = "+reminderID;
         try{
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute(query);
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }

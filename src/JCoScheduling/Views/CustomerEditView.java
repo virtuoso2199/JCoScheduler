@@ -147,7 +147,7 @@ public class CustomerEditView implements CustomerViewInterface{
                 
             }
             controller.updateCustomer(customer);
-            new MainWindow(controller.getUser());
+            //new MainWindow(controller.getUser());
             customerStage.close();
         });
         root.add(btnSave,0,6);
@@ -167,7 +167,7 @@ public class CustomerEditView implements CustomerViewInterface{
         
         btnCancel = new Button("Cancel");
         btnCancel.setOnAction(event->{
-            new MainWindow(controller.getUser());
+            //new MainWindow(controller.getUser());
             customerStage.close();
         });
         

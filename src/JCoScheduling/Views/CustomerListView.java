@@ -87,7 +87,7 @@ public class CustomerListView implements CustomerViewInterface{
         
         btnOK = new Button("OK");
         btnOK.setOnAction(e->{
-            new MainWindow(controller.getUser());
+            //new MainWindow(controller.getUser());
             customerListView.close();
         });
         
@@ -95,7 +95,7 @@ public class CustomerListView implements CustomerViewInterface{
         
         scene = new Scene(root,500,800);
         customerListView.setScene(scene);
-        customerListView.setTitle("Customer List");
+        customerListView.setTitle("Reports by Customer");
         
         
     }

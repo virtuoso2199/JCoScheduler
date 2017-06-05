@@ -22,22 +22,43 @@ import java.util.ArrayList;
  */
 public class CityDAOMySQL implements CityDAO{
     
-    //Database server information
-    private Connection conn = null;
-    private String driver = "com.mysql.jdbc.Driver";
-    private String db = "U03lv6";
-    private String url = "jdbc:mysql://52.206.157.109/" + db;
-    private String user = "U03lv6";
-    private String pass = "53688016198";
-
-    public CityDAOMySQL(){
-        try {
-            Class.forName(driver);
-            this.conn = DriverManager.getConnection(this.url,this.user,this.pass);
-        } catch(Exception ex){
+    private static Connection conn= null;
+    
+    static {
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection("jdbc:mysql://10.0.0.194/U03lv6", "jbowley", "Paw52beh!");
+        }catch(Exception ex){
             ex.printStackTrace();
         }
+        
     }
+    
+    //Database server information
+//    private Connection conn = null;
+//    private String driver = "com.mysql.jdbc.Driver";
+//    private String db = "U03lv6";
+//    private String url = "jdbc:mysql://10.0.0.194/" + db;
+//    private String user = "jbowley";
+//    private String pass = "Paw52beh!";
+
+    public CityDAOMySQL(){
+//        try {
+//            Class.forName(driver);
+//            this.conn = DriverManager.getConnection(this.url,this.user,this.pass);
+//        } catch(Exception ex){
+//            ex.printStackTrace();
+//        } 
+    }
+    
+//     public void finalize(){
+//        try{
+//            conn.close();
+//        }catch(SQLException ex){
+//            System.out.println("Unable to close database connection.\n");
+//            ex.printStackTrace();
+//        }
+//    }
     
     @Override
     public ArrayList<City> getAllCities() {
@@ -45,7 +66,7 @@ public class CityDAOMySQL implements CityDAO{
         
         try{
             String query = "SELECT * FROM city";
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             
             if(!rs.next()){
@@ -73,6 +94,9 @@ public class CityDAOMySQL implements CityDAO{
                 cityList.add(city);
                 
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -86,7 +110,7 @@ public class CityDAOMySQL implements CityDAO{
         
         try{
             String query = "SELECT * FROM city WHERE cityId ="+ID;
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             
             if(!rs.next()){
@@ -114,6 +138,9 @@ public class CityDAOMySQL implements CityDAO{
                 
                 
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -127,7 +154,7 @@ public class CityDAOMySQL implements CityDAO{
         
         try{
             String query = "SELECT * FROM city WHERE city ='"+cityName+"'";
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             
             if(!rs.next()){
@@ -155,6 +182,9 @@ public class CityDAOMySQL implements CityDAO{
                 cityList.add(city);
                 
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -169,12 +199,15 @@ public class CityDAOMySQL implements CityDAO{
         int nextID=0;
         try {
             String qryGetID = "SELECT MAX(cityId) AS cityId FROM city";
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(qryGetID);
             
             while(rs.next()){
                 nextID = rs.getInt("cityId")+1;
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -193,9 +226,10 @@ public class CityDAOMySQL implements CityDAO{
                         city.getAuditInfo().getLastUpdate()+"', '"+
                         city.getAuditInfo().getLastUpdatedBy()+"')";
         try{
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute(query);
             city.setCityID(nextID); //update referenced city object with ID from database
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -210,8 +244,9 @@ public class CityDAOMySQL implements CityDAO{
                                         "lastUpdateBy = '"+city.getAuditInfo().getLastUpdatedBy()+"' WHERE cityId = "+city.getCityID();
         
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute(query);
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -222,8 +257,9 @@ public class CityDAOMySQL implements CityDAO{
     public void deleteCity(City city) {
         String query = "DELETE FROM city WHERE cityId = "+city.getCityID();
         try{
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute(query);
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -232,8 +268,9 @@ public class CityDAOMySQL implements CityDAO{
     public void deleteCity(int cityID) {
         String query = "DELETE FROM city WHERE cityId = "+cityID;
         try{
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute(query);
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }

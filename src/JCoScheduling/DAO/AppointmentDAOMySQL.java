@@ -25,31 +25,52 @@ import java.util.ArrayList;
  * @author virtu
  */
 public class AppointmentDAOMySQL implements AppointmentDAO{
+    
+    private static Connection conn= null;
+    
+    static {
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection("jdbc:mysql://10.0.0.194/U03lv6", "jbowley", "Paw52beh!");
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+        
+    }
 
       //Database server information
-    private Connection conn = null;
-    private String driver = "com.mysql.jdbc.Driver";
-    private String db = "U03lv6";
-    private String url = "jdbc:mysql://52.206.157.109/" + db;
-    private String user = "U03lv6";
-    private String pass = "53688016198";
+//    private Connection conn = null;
+//    private String driver = "com.mysql.jdbc.Driver";
+//    private String db = "U03lv6";
+//    private String url = "jdbc:mysql://10.0.0.194/" + db;
+//    private String user = "jbowley";
+//    private String pass = "Paw52beh!";
     
     public AppointmentDAOMySQL(){
          //connect to database when instanced
-        try {
-            Class.forName(driver);
-            this.conn = DriverManager.getConnection(this.url,this.user,this.pass);
-        } catch(Exception ex){
-            ex.printStackTrace();
-        }
+//        try {
+//            Class.forName(driver);
+//            this.conn = DriverManager.getConnection(this.url,this.user,this.pass);
+//        } catch(Exception ex){
+//            ex.printStackTrace();
+//        } 
     }
+    
+//     public void finalize(){
+//        try{
+//            conn.close();
+//        }catch(SQLException ex){
+//            System.out.println("Unable to close database connection.\n");
+//            ex.printStackTrace();
+//        }
+//    }
     
     @Override
     public ArrayList<Appointment> getAllAppointments() {
         ArrayList<Appointment> apptList = new ArrayList<>();
         String query = "SELECT * FROM appointment";
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             
             
@@ -74,7 +95,7 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
                                                  rs.getTimestamp("end").toLocalDateTime().atZone(ZoneId.of("UTC")),
                                                  new AuditInfo(rs.getString("createdBy"),rs.getTimestamp("createDate").toLocalDateTime(),rs.getString("lastUpdateBy"),rs.getTimestamp("lastUpdate").toLocalDateTime()));
                 apptList.add(appointment);
-               
+               stmt.closeOnCompletion();
             }
         }catch(SQLException ex){
             ex.printStackTrace();
@@ -87,7 +108,7 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
         Appointment appt = null;
         String query = "SELECT * FROM appointment WHERE appointmentId ="+apptID;
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             
             
@@ -113,6 +134,9 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
                                                  new AuditInfo(rs.getString("createdBy"),rs.getTimestamp("createDate").toLocalDateTime(),rs.getString("lastUpdateBy"),rs.getTimestamp("lastUpdate").toLocalDateTime()));
                
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -124,7 +148,7 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
         ArrayList<Appointment> apptList = new ArrayList<>();
         String query = "SELECT * FROM appointment WHERE start BETWEEN '"+startDate.toLocalDateTime()+"' AND '"+endDate.toLocalDateTime()+"'";
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             
             
@@ -151,6 +175,9 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
                 apptList.add(appointment);
                
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -162,7 +189,7 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
         ArrayList<Appointment> apptList = new ArrayList<>();
         String query = "SELECT * FROM appointment WHERE customerId = "+customer.getCustomerID();
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
                
                 Appointment appointment = new Appointment(rs.getInt("appointmentId"),
@@ -177,6 +204,7 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
                                                  new AuditInfo(rs.getString("createdBy"),rs.getTimestamp("createDate").toLocalDateTime(),rs.getString("lastUpdateBy"),rs.getTimestamp("lastUpdate").toLocalDateTime()));
                 apptList.add(appointment);
                
+            stmt.closeOnCompletion();
             
         }catch(SQLException ex){
             ex.printStackTrace();
@@ -189,7 +217,7 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
         ArrayList<Appointment> apptList = new ArrayList<>();
         String query = "SELECT * FROM appointment WHERE createdBy = '"+user.getUsername()+"' OR lastUpdateBy = '"+user.getUsername()+"'";
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             
             
@@ -216,6 +244,8 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
                 apptList.add(appointment);
                
             }
+            
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -227,7 +257,7 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
         ArrayList<Appointment> apptList = new ArrayList<>();
         String query = "SELECT * FROM appointment WHERE createDate BETWEEN '"+startDate.withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime()+"' AND '"+endDate.withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime()+"'";
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             
             
@@ -254,6 +284,9 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
                 apptList.add(appointment);
                
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -266,12 +299,15 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
         int nextID=0;
         try {
             String query = "SELECT MAX(appointmentId) AS appointmentId FROM appointment";
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             
             while(rs.next()){
                 nextID = rs.getInt("appointmentId")+1;
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -295,9 +331,10 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
                             appointment.getAuditInfo().getLastUpdate()+"', '"+
                             appointment.getAuditInfo().getLastUpdatedBy()+"')";
             try{
-                Statement stmt = this.conn.createStatement();
+                Statement stmt = conn.createStatement();
                 stmt.execute(query);
                 appointment.setApptID(nextID); //update referenced city object with ID from database
+                stmt.closeOnCompletion();
             }catch(SQLException ex){
                 ex.printStackTrace();
             }
@@ -322,8 +359,9 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
                                         "lastUpdateBy = '"+appointment.getAuditInfo().getLastUpdatedBy()+"' WHERE appointmentId = "+appointment.getApptID();
         
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute(query);
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -333,8 +371,9 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
     public void deleteAppointment(Appointment appointment) {
         String query = "DELETE FROM appointment WHERE appointmentId = "+appointment.getApptID();
         try{
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute(query);
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -344,8 +383,9 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
     public void deleteAppointment(int appointmentID) {
         String query = "DELETE FROM appointment WHERE appointmentId = "+appointmentID;
         try{
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute(query);
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }

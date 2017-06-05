@@ -9,7 +9,7 @@ import JCoScheduling.Controllers.CustomerControllerInterface;
 import JCoScheduling.Exceptions.FormatException;
 import JCoScheduling.Models.Customer;
 import JCoScheduling.Models.CustomerModelInterface;
-import JCoScheduling.Models.CustomerObserver;
+import JCoScheduling.Models.UserModelInterface;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -58,11 +58,13 @@ public class CustomerAddView implements CustomerViewInterface{
     private Button btnClear;
     private Button btnCancel;
     private Scene scene;
+    private UserModelInterface user; 
     
-    public CustomerAddView(CustomerControllerInterface controller, CustomerModelInterface customer){
+    public CustomerAddView(CustomerControllerInterface controller, CustomerModelInterface customer, UserModelInterface user){
         this.controller = controller;
         this.customer = customer;
         this.customer.registerObserver(this);
+        this.user = user;
 
     }
   

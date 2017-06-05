@@ -24,30 +24,51 @@ import java.util.ArrayList;
  */
 public class AddressDAOMySQL implements AddressDAO{
     
+    private static Connection conn= null;
+    
+    static {
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection("jdbc:mysql://10.0.0.194/U03lv6", "jbowley", "Paw52beh!");
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+        
+    }
+    
     //Database server information
-    private Connection conn = null;
-    private String driver = "com.mysql.jdbc.Driver";
-    private String db = "U03lv6";
-    private String url = "jdbc:mysql://52.206.157.109/" + db;
-    private String user = "U03lv6";
-    private String pass = "53688016198";
+//    private Connection conn = null;
+//    private String driver = "com.mysql.jdbc.Driver";
+//    private String db = "U03lv6";
+//    private String url = "jdbc:mysql://10.0.0.194/" + db;
+//    private String user = "jbowley";
+//    private String pass = "Paw52beh!";
     
     public AddressDAOMySQL(){
         //connect to database when instanced
-        try {
-            Class.forName(driver);
-            this.conn = DriverManager.getConnection(this.url,this.user,this.pass);
-        } catch(Exception ex){
-            ex.printStackTrace();
-        }
+//        try {
+//            Class.forName(driver);
+//            this.conn = DriverManager.getConnection(this.url,this.user,this.pass);
+//        } catch(Exception ex){
+//            ex.printStackTrace();
+//        }
     }
+    
+//     public void finalize(){
+//        try{
+//            conn.close();
+//        }catch(SQLException ex){
+//            System.out.println("Unable to close database connection.\n");
+//            ex.printStackTrace();
+//        }
+//    }
 
     @Override
     public ArrayList<Address> getAllAddresses() {
         ArrayList<Address> addressList = new ArrayList<>();
         String qryGetAllAddr = "SELECT * FROM address";
         try {
-            Statement stmtGetAddr = this.conn.createStatement();
+            Statement stmtGetAddr = conn.createStatement();
             ResultSet rsGetAddr = stmtGetAddr.executeQuery(qryGetAllAddr);
             
             
@@ -71,6 +92,9 @@ public class AddressDAOMySQL implements AddressDAO{
                 addressList.add(address);
                 
             }
+            
+            stmtGetAddr.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -83,7 +107,7 @@ public class AddressDAOMySQL implements AddressDAO{
         
         try{
             String query = "SELECT * FROM address WHERE addressId ="+addressID;
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             
             if(!rs.next()){
@@ -116,6 +140,9 @@ public class AddressDAOMySQL implements AddressDAO{
                 
                 
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -130,7 +157,7 @@ public class AddressDAOMySQL implements AddressDAO{
         
         String qryGetAllAddr = "SELECT * FROM address WHERE createdBy ='"+username+"' OR lastUpdateBy = '"+username+"'";
         try {
-            Statement stmtGetAddr = this.conn.createStatement();
+            Statement stmtGetAddr = conn.createStatement();
             ResultSet rsGetAddr = stmtGetAddr.executeQuery(qryGetAllAddr);
             
             while(rsGetAddr.next()){
@@ -154,6 +181,9 @@ public class AddressDAOMySQL implements AddressDAO{
                 addressList.add(address);
 
             }
+            
+            stmtGetAddr.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -165,7 +195,7 @@ public class AddressDAOMySQL implements AddressDAO{
         ArrayList<Address> addressList = new ArrayList<>();
         String qryGetAllAddr = "SELECT * FROM address WHERE createDate BETWEEN ='"+startDate+"' AND '"+endDate+"'";
         try {
-            Statement stmtGetAddr = this.conn.createStatement();
+            Statement stmtGetAddr = conn.createStatement();
             ResultSet rsGetAddr = stmtGetAddr.executeQuery(qryGetAllAddr);
             
             while(rsGetAddr.next()){
@@ -188,6 +218,9 @@ public class AddressDAOMySQL implements AddressDAO{
                 addressList.add(address);
 
             }
+            
+            stmtGetAddr.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -199,7 +232,7 @@ public class AddressDAOMySQL implements AddressDAO{
          ArrayList<Address> addressList = new ArrayList<>();
         String qryGetAllAddr = "SELECT * FROM address WHERE lastUpdate BETWEEN ='"+startDate+"' AND '"+endDate+"'";
         try {
-            Statement stmtGetAddr = this.conn.createStatement();
+            Statement stmtGetAddr = conn.createStatement();
             ResultSet rsGetAddr = stmtGetAddr.executeQuery(qryGetAllAddr);
             
             while(rsGetAddr.next()){
@@ -223,6 +256,9 @@ public class AddressDAOMySQL implements AddressDAO{
                 addressList.add(address);
 
             }
+            
+            stmtGetAddr.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -236,12 +272,15 @@ public class AddressDAOMySQL implements AddressDAO{
         int nextID=0;
         try {
             String qryGetID = "SELECT MAX(addressId) AS addressId FROM address";
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(qryGetID);
             
             while(rs.next()){
                 nextID = rs.getInt("addressId")+1;
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -263,9 +302,10 @@ public class AddressDAOMySQL implements AddressDAO{
                         address.getAuditInfo().getLastUpdate()+"', '"+
                         address.getAuditInfo().getLastUpdatedBy()+"')";
         try{
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute(query);
             address.setAddressID(nextID); //update referenced city object with ID from database
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -288,8 +328,9 @@ public class AddressDAOMySQL implements AddressDAO{
                                         "lastUpdateBy = '"+address.getAuditInfo().getLastUpdatedBy()+"' WHERE addressId = "+address.getAddressID();
         
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute(query);
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -299,8 +340,9 @@ public class AddressDAOMySQL implements AddressDAO{
     public void deleteAddress(Address address) throws NotFoundException{
         String query = "DELETE FROM address WHERE addressId = "+address.getAddressID();
         try{
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute(query);
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -310,8 +352,9 @@ public class AddressDAOMySQL implements AddressDAO{
     public void deleteAddress(int addressID) throws NotFoundException{
         String query = "DELETE FROM address WHERE addressId = "+addressID;
         try{
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute(query);
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }

@@ -26,30 +26,51 @@ import java.util.ArrayList;
  */
 public class CustomerDAOMySQL implements CustomerDAO{
     
+    private static Connection conn= null;
+    
+    static {
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection("jdbc:mysql://10.0.0.194/U03lv6", "jbowley", "Paw52beh!");
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+        
+    }
+    
      //Database server information
-    private Connection conn = null;
-    private String driver = "com.mysql.jdbc.Driver";
-    private String db = "U03lv6";
-    private String url = "jdbc:mysql://52.206.157.109/" + db;
-    private String user = "U03lv6";
-    private String pass = "53688016198";
+//    private Connection conn = null;
+//    private String driver = "com.mysql.jdbc.Driver";
+//    private String db = "U03lv6";
+//    private String url = "jdbc:mysql://10.0.0.194/" + db;
+//    private String user = "jbowley";
+//    private String pass = "Paw52beh!";
     
     public CustomerDAOMySQL(){
         //connect to database when instanced
-        try {
-            Class.forName(driver);
-            this.conn = DriverManager.getConnection(this.url,this.user,this.pass);
-        } catch(Exception ex){
-            ex.printStackTrace();
-        }
+//        try {
+//            Class.forName(driver);
+//            this.conn = DriverManager.getConnection(this.url,this.user,this.pass);
+//        } catch(Exception ex){
+//            ex.printStackTrace();
+//        } 
     }
+    
+//     public void finalize(){
+//        try{
+//            conn.close();
+//        }catch(SQLException ex){
+//            System.out.println("Unable to close database connection.\n");
+//            ex.printStackTrace();
+//        }
+//    }
 
     @Override
     public ArrayList<CustomerModelInterface> getAllCustomers() {
         ArrayList<CustomerModelInterface> customerList = new ArrayList<>();
         String qryGetAllCust = "SELECT * FROM customer";
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(qryGetAllCust);
             
             
@@ -73,6 +94,9 @@ public class CustomerDAOMySQL implements CustomerDAO{
                     ex.printStackTrace();
                 }
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -89,7 +113,7 @@ public class CustomerDAOMySQL implements CustomerDAO{
         
         try{
             String query = "SELECT * FROM customer WHERE customerId ="+customerID;
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             
             if(!rs.next()){
@@ -120,6 +144,9 @@ public class CustomerDAOMySQL implements CustomerDAO{
                 
                 
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -132,7 +159,7 @@ public class CustomerDAOMySQL implements CustomerDAO{
         ArrayList<CustomerModelInterface> customerList = new ArrayList<>();
         String qryGetAllCust = "SELECT * FROM customer WHERE customerName LIKE '"+customerName+"'";
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(qryGetAllCust);
             
             
@@ -156,6 +183,9 @@ public class CustomerDAOMySQL implements CustomerDAO{
                     ex.printStackTrace();
                 }
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -167,7 +197,7 @@ public class CustomerDAOMySQL implements CustomerDAO{
         ArrayList<CustomerModelInterface> customerList = new ArrayList<>();
         String qryGetAllCust = "SELECT * FROM customer WHERE createdBy = '"+username+"' OR lastUpdateBy = '"+username+"'";
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(qryGetAllCust);
             
             
@@ -191,6 +221,9 @@ public class CustomerDAOMySQL implements CustomerDAO{
                     ex.printStackTrace();
                 }
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -202,7 +235,7 @@ public class CustomerDAOMySQL implements CustomerDAO{
         ArrayList<CustomerModelInterface> customerList = new ArrayList<>();
         String qryGetAllCust = "SELECT * FROM customer WHERE createDate BETWEEN = '"+startDate+"' AND lastUpdateBy = '"+endDate+"'";
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(qryGetAllCust);
             
             
@@ -226,6 +259,9 @@ public class CustomerDAOMySQL implements CustomerDAO{
                     ex.printStackTrace();
                 }
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -237,7 +273,7 @@ public class CustomerDAOMySQL implements CustomerDAO{
         ArrayList<CustomerModelInterface> customerList = new ArrayList<>();
         String qryGetAllCust = "SELECT * FROM customer WHERE lastUpdate BETWEEN = '"+startDate+"' AND lastUpdateBy = '"+endDate+"'";
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(qryGetAllCust);
             
             
@@ -261,6 +297,9 @@ public class CustomerDAOMySQL implements CustomerDAO{
                     ex.printStackTrace();
                 }
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -280,8 +319,9 @@ public class CustomerDAOMySQL implements CustomerDAO{
                                         "lastUpdateBy = '"+customer.getAuditInfo().getLastUpdatedBy()+"' WHERE customerId = "+customer.getCustomerID();
         
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute(query);
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -293,12 +333,14 @@ public class CustomerDAOMySQL implements CustomerDAO{
         int nextID=0;
         try {
             String qryGetID = "SELECT MAX(customerId) AS customerId FROM customer";
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(qryGetID);
             
             while(rs.next()){
                 nextID = rs.getInt("customerId")+1;
             }
+            
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -319,10 +361,11 @@ public class CustomerDAOMySQL implements CustomerDAO{
                         customer.getAuditInfo().getLastUpdatedBy()+"')";
         try{
             System.out.println(query); //DEBUG ONLY
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute(query);
             customer.setCustomerID(nextID); //update referenced city object with ID from database
             System.out.println("Customer in CustomerDAO: "+ customer); //DEBUG ONLY
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -333,8 +376,9 @@ public class CustomerDAOMySQL implements CustomerDAO{
     public void deleteCustomer(CustomerModelInterface customer) {
        String query = "DELETE FROM customer WHERE customerId = "+customer.getCustomerID();
         try{
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute(query);
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -344,8 +388,9 @@ public class CustomerDAOMySQL implements CustomerDAO{
     public void deleteCustomer(int customerID) throws NotFoundException {
          String query = "DELETE FROM customer WHERE customerId = "+customerID;
         try{
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute(query);
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }

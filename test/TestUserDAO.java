@@ -1,7 +1,10 @@
 
 import JCoScheduling.DAO.UserDAO;
 import JCoScheduling.DAO.UserDAOMySQL;
+import JCoScheduling.Models.AuditInfo;
 import JCoScheduling.Models.User;
+import JCoScheduling.Models.UserModelInterface;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 /*
@@ -16,22 +19,22 @@ import java.util.ArrayList;
  */
 public class TestUserDAO {
     public static void main(String args[]){
-        User jonathan = new User();
-//        jonathan.setActive(1);
-//        jonathan.setUsername("jbowley");
-//        jonathan.setPassword("Paw52beh!");
-//        jonathan.setAuditInfo(new AuditInfo(jonathan,LocalDateTime.now(),jonathan,LocalDateTime.now()));
+        UserModelInterface jonathan = new User();
+        jonathan.setActive(1);
+        jonathan.setUsername("jbowley");
+        jonathan.setPassword("Paw52beh!");
+        jonathan.setAuditInfo(new AuditInfo(jonathan.getUsername(),LocalDateTime.now(),jonathan.getUsername(),LocalDateTime.now()));
         
         UserDAO userDAO = new UserDAOMySQL();
         
-        //userDAO.createUser(jonathan); Create SUCCESS!
-//        userDAO.deleteUser(jonathan); Delete SUCCESS!
-//       try{ Read by ID SUCCESS!!!!
-//           jonathan = userDAO.getUserByID(0);
-//           System.out.println(jonathan.toString());
-//       }catch(Exception ex){
-//           ex.printStackTrace();
-//       }
+        userDAO.createUser((User)jonathan,"admin"); //Create SUCCESS!
+        userDAO.deleteUser((User)jonathan,"admin"); //Delete SUCCESS!
+       try{ //Read by ID SUCCESS!!!!
+           jonathan = userDAO.getUserByID(0);
+           System.out.println(jonathan.toString());
+       }catch(Exception ex){
+           ex.printStackTrace();
+       }
        
 //       try{ Read by username SUCCESS!!
 //           jonathan = userDAO.getUserByName("jbowley");

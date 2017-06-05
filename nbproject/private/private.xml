@@ -3,17 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file://FilerACC1/M219663$/Desktop/GitHub/JCoScheduler/test/TestTimeZones.java</file>
-            <file>file://FilerACC1/M219663$/Desktop/GitHub/JCoScheduler/src/JCoScheduling/Controllers/AppointmentController.java</file>
-            <file>file://FilerACC1/M219663$/Desktop/GitHub/JCoScheduler/src/JCoScheduling/C195Final2.java</file>
-            <file>file://FilerACC1/M219663$/Desktop/GitHub/JCoScheduler/src/JCoScheduling/Controllers/AppointmentControllerInterface.java</file>
-            <file>file://FilerACC1/M219663$/Desktop/GitHub/JCoScheduler/src/JCoScheduling/Views/MonthCalendarWindow.java</file>
-            <file>file://FilerACC1/M219663$/Desktop/GitHub/JCoScheduler/src/JCoScheduling/Controllers/CustomerController.java</file>
-            <file>file://FilerACC1/M219663$/Desktop/GitHub/JCoScheduler/src/JCoScheduling/Views/CustomerListView.java</file>
-            <file>file://FilerACC1/M219663$/Desktop/GitHub/JCoScheduler/src/JCoScheduling/Views/MainWindow.java</file>
-            <file>file://FilerACC1/M219663$/Desktop/GitHub/JCoScheduler/src/JCoScheduling/Models/Appointment.java</file>
-            <file>file://FilerACC1/M219663$/Desktop/GitHub/JCoScheduler/src/JCoScheduling/Views/WkCalendarWindow.java</file>
-            <file>file://FilerACC1/M219663$/Desktop/GitHub/JCoScheduler/src/JCoScheduling/DAO/AppointmentDAOMySQL.java</file>
+            <file>file:/C:/Users/virtu/Dropbox%20(Personal)/Development/C195Final2/src/JCoScheduling/Controllers/AppointmentController.java</file>
+            <file>file:/C:/Users/virtu/Dropbox%20(Personal)/Development/C195Final2/src/JCoScheduling/DAO/UserDAOMySQL.java</file>
+            <file>file:/C:/Users/virtu/Dropbox%20(Personal)/Development/C195Final2/src/JCoScheduling/C195Final2.java</file>
+            <file>file:/C:/Users/virtu/Dropbox%20(Personal)/Development/C195Final2/test/TestUserDAO.java</file>
+            <file>file:/C:/Users/virtu/Dropbox%20(Personal)/Development/C195Final2/src/JCoScheduling/Controllers/UserController.java</file>
         </group>
     </open-files>
 </project-private>

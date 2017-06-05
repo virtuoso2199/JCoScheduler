@@ -20,9 +20,9 @@ public class TestConnection {
         Connection conn = null;
         String driver = "com.mysql.jdbc.Driver";
         String db = "U03lv6";
-        String url = "jdbc:mysql://52.206.157.109/" + db;
-        String user = "U03lv6";
-        String pass = "53688016198";
+        String url = "jdbc:mysql://10.0.0.194/" + db;
+        String user = "jbowley";
+        String pass = "Paw52beh!";
         try {
             Class.forName(driver);
             conn = DriverManager.getConnection(url,user,pass);

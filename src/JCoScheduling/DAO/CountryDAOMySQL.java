@@ -22,23 +22,44 @@ import java.util.ArrayList;
  */
 public class CountryDAOMySQL implements CountryDAO{
     
+    private static Connection conn= null;
+    
+    static {
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection("jdbc:mysql://10.0.0.194/U03lv6", "jbowley", "Paw52beh!");
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+        
+    }
+    
     //Database server information
-    private Connection conn = null;
-    private String driver = "com.mysql.jdbc.Driver";
-    private String db = "U03lv6";
-    private String url = "jdbc:mysql://52.206.157.109/" + db;
-    private String user = "U03lv6";
-    private String pass = "53688016198";
+//    private Connection conn = null;
+//    private String driver = "com.mysql.jdbc.Driver";
+//    private String db = "U03lv6";
+//    private String url = "jdbc:mysql://10.0.0.194/" + db;
+//    private String user = "jbowley";
+//    private String pass = "Paw52beh!";
     
     public CountryDAOMySQL(){
          //connect to database when instanced
-        try {
-            Class.forName(driver);
-            this.conn = DriverManager.getConnection(this.url,this.user,this.pass);
-        } catch(Exception ex){
-            ex.printStackTrace();
-        }
+//        try {
+//            Class.forName(driver);
+//            this.conn = DriverManager.getConnection(this.url,this.user,this.pass);
+//        } catch(Exception ex){
+//            ex.printStackTrace();
+//        } 
     }
+    
+//     public void finalize(){
+//        try{
+//            conn.close();
+//        }catch(SQLException ex){
+//            System.out.println("Unable to close database connection.\n");
+//            ex.printStackTrace();
+//        }
+//    }
 
     @Override
     public ArrayList<Country> getAllCountries() {
@@ -46,7 +67,7 @@ public class CountryDAOMySQL implements CountryDAO{
         ArrayList<Country> countryList = new ArrayList<>();
         String query = "SELECT * FROM country";
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             while(rs.next()){
                 Country country = new Country(rs.getInt("countryId"),
@@ -57,6 +78,9 @@ public class CountryDAOMySQL implements CountryDAO{
                                                             rs.getTimestamp("lastUpdate").toLocalDateTime()));
                 countryList.add(country);
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -69,7 +93,7 @@ public class CountryDAOMySQL implements CountryDAO{
         Country country=null;
         String query = "SELECT * FROM country WHERE countryId = "+countryId;
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             if (!rs.next()){
                 throw new NotFoundException("Country ID "+countryId+ " not found in database");
@@ -87,6 +111,9 @@ public class CountryDAOMySQL implements CountryDAO{
                                                             rs.getTimestamp("lastUpdate").toLocalDateTime()));
                 
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -100,7 +127,7 @@ public class CountryDAOMySQL implements CountryDAO{
         
         String query = "SELECT * FROM country WHERE country = '"+countryName+"'";
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             if (!rs.next()){
                 throw new NotFoundException("Counrty "+countryName+ " not found in database");
@@ -117,6 +144,9 @@ public class CountryDAOMySQL implements CountryDAO{
                                                             rs.getTimestamp("lastUpdate").toLocalDateTime()));
                 countryList.add(country);
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -130,12 +160,15 @@ public class CountryDAOMySQL implements CountryDAO{
         int nextNum=0;
         String qryNextNum = "SELECT MAX(countryId) AS countryId FROM country";
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(qryNextNum);
             
             while(rs.next()){
                 nextNum = rs.getInt("countryId")+1;
             }
+            
+            stmt.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -149,9 +182,10 @@ public class CountryDAOMySQL implements CountryDAO{
                                             country.getAuditInfo().getLastUpdate()+"', '"+
                                             country.getAuditInfo().getLastUpdatedBy()+"')";
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute(query);
             country.setCountryID(nextNum); //update object with ID from database
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -165,8 +199,9 @@ public class CountryDAOMySQL implements CountryDAO{
                                             "lastUpdate = '"+LocalDateTime.now()+"', "+
                                             "lastUpdateBy = '"+country.getAuditInfo().getLastUpdatedBy()+"' WHERE countryId = "+ country.getCountryID();
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute(query);
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -176,8 +211,9 @@ public class CountryDAOMySQL implements CountryDAO{
     public void deleteCountry(Country country) {
         String query = "DELETE FROM country WHERE countryId= "+country.getCountryID();
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute(query);
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -186,8 +222,9 @@ public class CountryDAOMySQL implements CountryDAO{
     public void deleteCountry(int countryID) {
         String query = "DELETE FROM country WHERE countryId = "+countryID;
         try {
-            Statement stmt = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute(query);
+            stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();
         }

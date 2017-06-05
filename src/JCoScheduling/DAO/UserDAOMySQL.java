@@ -24,31 +24,50 @@ import java.util.ArrayList;
 public class UserDAOMySQL implements UserDAO{
     
     //Database server information
-    private Connection conn = null;
-    private String driver = "com.mysql.jdbc.Driver";
-    private String db = "U03lv6";
-    private String url = "jdbc:mysql://52.206.157.109/" + db;
-    private String user = "U03lv6";
-    private String pass = "53688016198";
+    private static Connection conn = null;
+    
+    static {
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection("jdbc:mysql://10.0.0.194/U03lv6", "jbowley", "Paw52beh!");
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+//        private String driver = "com.mysql.jdbc.Driver";
+//        private String db = "U03lv6";
+//        private String url = "jdbc:mysql://10.0.0.194/" + db;
+//        private String user = "jbowley";
+//        private String pass = "Paw52beh!";
+    }
+    
     
     public UserDAOMySQL(){
         //first, connect to the database
-        try {
-            Class.forName(driver);
-            this.conn = DriverManager.getConnection(this.url,this.user,this.pass);
-        } catch(Exception ex){
-            ex.printStackTrace();
-        }
+//        try {
+//            Class.forName(driver);
+//            this.conn = DriverManager.getConnection(this.url,this.user,this.pass);
+//        } catch(Exception ex){
+//            ex.printStackTrace();
+//        } 
     }
+    
+//    public void finalize(){
+//        try{
+//            conn.close();
+//        }catch(SQLException ex){
+//            System.out.println("Unable to close database connection.\n");
+//            ex.printStackTrace();
+//        }
+//    }
 
     @Override
     public ArrayList<User> getAllUsers() {
         //create ArrayList of User objects to return after querying the database
         ArrayList<User> users = new ArrayList<>();
         try{
-            Statement statement = this.conn.createStatement();
+            Statement stmt = conn.createStatement();
             String query = "SELECT * FROM user;";
-            ResultSet rs = statement.executeQuery(query);
+            ResultSet rs = stmt.executeQuery(query);
             
             while(rs.next()){
                 User user = new User();
@@ -59,6 +78,9 @@ public class UserDAOMySQL implements UserDAO{
                 AuditInfo ai = new AuditInfo(rs.getString("createBy"), rs.getTimestamp("createDate").toLocalDateTime(),rs.getString("lastUpdatedBy"), rs.getTimestamp("lastUpdate").toLocalDateTime());
                 users.add(user);
             }
+            
+            stmt.closeOnCompletion();
+            
         } catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -71,7 +93,7 @@ public class UserDAOMySQL implements UserDAO{
         User fetchedUser = new User();
         String qryFetchUser = "SELECT * FROM user WHERE userId = "+userID;
         try{
-            Statement stmtFetchUser = this.conn.createStatement();
+            Statement stmtFetchUser = conn.createStatement();
             ResultSet rsFetchUser = stmtFetchUser.executeQuery(qryFetchUser);
             if(rsFetchUser.wasNull()){
                 throw new NotFoundException("User not found in database!");
@@ -89,6 +111,9 @@ public class UserDAOMySQL implements UserDAO{
                 }
                 
             }
+            
+            stmtFetchUser.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -101,7 +126,7 @@ public class UserDAOMySQL implements UserDAO{
         User fetchedUser = new User();
         String qryFetchUser = "SELECT * FROM user WHERE userName = '"+username+"'";
         try{
-            Statement stmtFetchUser = this.conn.createStatement();
+            Statement stmtFetchUser = conn.createStatement();
             ResultSet rsFetchUser = stmtFetchUser.executeQuery(qryFetchUser);
             if(rsFetchUser.wasNull()){
                 throw new NotFoundException("User not found in database!");
@@ -119,6 +144,9 @@ public class UserDAOMySQL implements UserDAO{
                 }
                 
             }
+            
+            stmtFetchUser.closeOnCompletion();
+            
         }catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -133,7 +161,7 @@ public class UserDAOMySQL implements UserDAO{
             //since the primary key doesn't autoincrement, get the next available key
             int nextUserID=0;
             
-            Statement stmtGetNextID = this.conn.createStatement();
+            Statement stmtGetNextID = conn.createStatement();
             String qryGetNextID = "SELECT MAX(userId) AS userId FROM user;";
             ResultSet rsNextID = stmtGetNextID.executeQuery(qryGetNextID);
             
@@ -148,6 +176,8 @@ public class UserDAOMySQL implements UserDAO{
                 }
             }
             
+            stmtGetNextID.closeOnCompletion();
+            
             String query = "INSERT INTO user (userId, userName, password,active,createBy,createDate,lastUpdate,lastUpdatedBy) VALUES ("+
                 nextUserID+", '"+
                 user.getUsername()+"', '"+
@@ -159,8 +189,9 @@ public class UserDAOMySQL implements UserDAO{
                 createUser+"');";
             
             System.out.println(query); //DEBUG ONLY
-            Statement createStatement = this.conn.createStatement();
+            Statement createStatement = conn.createStatement();
             createStatement.execute(query);
+            createStatement.closeOnCompletion();
         } catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -170,7 +201,7 @@ public class UserDAOMySQL implements UserDAO{
     public void updateUser(User user, String updateUser) {
         
         try{
-            Statement stmtUpdate = this.conn.createStatement();
+            Statement stmtUpdate = conn.createStatement();
             String qryUpdate = "UPDATE user "+
                     "SET username = '"+user.getUsername()+"', "+
                     "password = '"+user.getPassword()+"', "+
@@ -179,6 +210,7 @@ public class UserDAOMySQL implements UserDAO{
                     "lastUpdatedBy ='"+updateUser+"' "+
                     "WHERE userId="+user.getUserID();
             stmtUpdate.execute(qryUpdate);
+            stmtUpdate.closeOnCompletion();
         } catch(SQLException ex){
             ex.printStackTrace();
         }
@@ -188,8 +220,9 @@ public class UserDAOMySQL implements UserDAO{
     public void deleteUser(User user, String deleteUser) {
         String qryDelUser = "UPDATE user SET active = 0 WHERE userId = "+user.getUserID();
         try{
-            Statement stmtDelUser = this.conn.createStatement();
+            Statement stmtDelUser = conn.createStatement();
             stmtDelUser.execute(qryDelUser);
+            stmtDelUser.closeOnCompletion();
         }catch(Exception ex){
             ex.printStackTrace();
         }

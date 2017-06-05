@@ -7,6 +7,7 @@ package JCoScheduling.Views;
 
 import JCoScheduling.Controllers.AppointmentControllerInterface;
 import JCoScheduling.Models.Appointment;
+import JCoScheduling.Models.UserModelInterface;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -39,9 +40,11 @@ public class WkCalendarWindow implements AppointmentViewInterface {
     private ZonedDateTime viewStopDt;
     private ArrayList<Appointment> appts;
     private AppointmentControllerInterface apptController;
+    private UserModelInterface user;
     
-    public WkCalendarWindow(ZoneId userTz, AppointmentControllerInterface ac){
-        this.userTimezone = userTz;
+    public WkCalendarWindow(ZoneId userTz, AppointmentControllerInterface ac, UserModelInterface user){
+        this.userTimezone = MainWindow.getTimeZone();
+        this.user = MainWindow.getUser();
         this.apptController = ac;
         this.viewStartDt = LocalDateTime.of(LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)),LocalTime.of(0, 0)).atZone(userTimezone);
         this.viewStopDt = LocalDateTime.of(LocalDate.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)),LocalTime.of(23,59,59)).atZone(userTimezone);
@@ -59,7 +62,7 @@ public class WkCalendarWindow implements AppointmentViewInterface {
         root.setAlignment(Pos.CENTER);
         
         //calendar controls
-        Button btnBack= new Button("Back");
+        Button btnBack= new Button("<<");
         GridPane.setHalignment(btnBack, HPos.CENTER);
         root.add(btnBack, 0, 0);
         Label lblTitle = new Label("Weekly Calendar");
@@ -71,7 +74,7 @@ public class WkCalendarWindow implements AppointmentViewInterface {
         lblTitle.setEffect(titleShadow);
         GridPane.setHalignment(lblTitle, HPos.CENTER);
         root.add(lblTitle,1,0,5,1);
-        Button btnForward = new Button("Forward");
+        Button btnForward = new Button(">>");
         GridPane.setHalignment(btnForward, HPos.CENTER);
         root.add(btnForward,6,0);
         
@@ -136,14 +139,14 @@ public class WkCalendarWindow implements AppointmentViewInterface {
         Button btnMonth = new Button("Month");
         GridPane.setHalignment(btnMonth, HPos.CENTER);
         btnMonth.setOnAction(event->{
-            Stage monthView = MonthCalendarWindow.getMonthCalWindow();
+            Stage monthView = new MonthCalendarWindow(this.apptController).getMonthCalWindow();
             monthView.show();
             stage.close();
         });
         root.add(btnMonth,0,2);
         Button btnOK = new Button("OK");
         btnOK.setOnAction(event->{
-            new MainWindow();
+            //new MainWindow(this.user, this.userTimezone);
             stage.close();
         });
         GridPane.setHalignment(btnOK, HPos.CENTER);

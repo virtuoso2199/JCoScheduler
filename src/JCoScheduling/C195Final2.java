@@ -143,7 +143,9 @@ public class C195Final2 extends Application implements UserObserver{
         Button btnOK = new Button("OK");
 //        btnOK.setPrefSize(40,20);
         btnOK.setOnAction((ActionEvent event)->{
-                
+                if (userTimezone==null){
+                    userTimezone = Appointment.getZone("New York");
+                }
                 this.user.setUsername(txtUsername.getText());
                 this.user.setPassword(txtPassword.getText());
                 if(userController.validateLogin()){ //user authenticated

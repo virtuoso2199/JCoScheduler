@@ -16,6 +16,7 @@ import JCoScheduling.Models.CustomerModelInterface;
 import JCoScheduling.Models.UserModelInterface;
 import JCoScheduling.Views.AppointmentView;
 import JCoScheduling.Views.AppointmentViewInterface;
+import JCoScheduling.Views.MainWindow;
 import JCoScheduling.Views.WkCalendarWindow;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -62,7 +63,8 @@ public class AppointmentController implements AppointmentControllerInterface{
     @Override
     public void showAppointmentMaintenanceView(AppointmentModelInterface appt) {
         //when passed with an appointment, this is edit mode
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.apptView = new AppointmentView(this, appt);
+        this.apptView.show();
     }
 
     @Override
@@ -74,7 +76,7 @@ public class AppointmentController implements AppointmentControllerInterface{
     @Override
     public void showCalendarWeekly() {
         //loads view of all appointments in the current week
-        apptView = new WkCalendarWindow(this.userTimezone, this);
+        apptView = new WkCalendarWindow(this.userTimezone, this,MainWindow.getUser());
         apptView.show();
     }
 
@@ -89,6 +91,7 @@ public class AppointmentController implements AppointmentControllerInterface{
             apptDAO.updateAppointment((Appointment)appt);
         }
         this.appt = appt;
+        MainWindow.refreshAppts();
     }
 
     @Override
@@ -118,6 +121,11 @@ public class AppointmentController implements AppointmentControllerInterface{
         String apptDt = appt.getStartTime().withZoneSameInstant(userTimezone).format(DateTimeFormatter.ofPattern("MM/dd hh:mm a"));
         Label lblAppt = new Label(appt.getTitle()+"\n"+appt.getCustomer().getFirstName()+" "+appt.getCustomer().getLastName()+"\n"+apptDt);
         lblAppt.setStyle("-fx-border-color:red; -fx-background-color: #e6ffff;");
+        lblAppt.setOnMouseClicked(event->{
+            if (event.getClickCount()>1){ //load appointment for editing when double clicked
+                showAppointmentMaintenanceView(appt);
+            }
+        });
         return lblAppt;
     }
     
