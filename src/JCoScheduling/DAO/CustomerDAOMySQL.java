@@ -100,10 +100,10 @@ public class CustomerDAOMySQL implements CustomerDAO{
         }catch(SQLException ex){
             ex.printStackTrace();
         }
-        System.out.println(customerList.size()+" customers in database"); //DEBUG ONLY
-        for(CustomerModelInterface customer: customerList){//DEBUG ONLY
-            System.out.println(customer);//DEBUG ONLY
-        }//DEBUG ONLY
+//        System.out.println(customerList.size()+" customers in database"); //DEBUG ONLY
+//        for(CustomerModelInterface customer: customerList){//DEBUG ONLY
+//            System.out.println(customer);//DEBUG ONLY
+//        }//DEBUG ONLY
         return customerList;
     }
 
@@ -360,11 +360,11 @@ public class CustomerDAOMySQL implements CustomerDAO{
                         customer.getAuditInfo().getLastUpdate()+"', '"+
                         customer.getAuditInfo().getLastUpdatedBy()+"')";
         try{
-            System.out.println(query); //DEBUG ONLY
+            //System.out.println(query); //DEBUG ONLY
             Statement stmt = conn.createStatement();
             stmt.execute(query);
             customer.setCustomerID(nextID); //update referenced city object with ID from database
-            System.out.println("Customer in CustomerDAO: "+ customer); //DEBUG ONLY
+            //System.out.println("Customer in CustomerDAO: "+ customer); //DEBUG ONLY
             stmt.closeOnCompletion();
         }catch(SQLException ex){
             ex.printStackTrace();

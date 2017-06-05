@@ -165,7 +165,7 @@ public class UserDAOMySQL implements UserDAO{
             String qryGetNextID = "SELECT MAX(userId) AS userId FROM user;";
             ResultSet rsNextID = stmtGetNextID.executeQuery(qryGetNextID);
             
-            System.out.println("ResultSet was null: "+ rsNextID.wasNull()); //DEBUG ONLY
+            //System.out.println("ResultSet was null: "+ rsNextID.wasNull()); //DEBUG ONLY
             
             if (rsNextID.wasNull()){
                 nextUserID = 1;
@@ -188,7 +188,7 @@ public class UserDAOMySQL implements UserDAO{
                 LocalDateTime.now()+"', '"+
                 createUser+"');";
             
-            System.out.println(query); //DEBUG ONLY
+            //System.out.println(query); //DEBUG ONLY
             Statement createStatement = conn.createStatement();
             createStatement.execute(query);
             createStatement.closeOnCompletion();

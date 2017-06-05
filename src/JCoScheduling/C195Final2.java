@@ -103,7 +103,7 @@ public class C195Final2 extends Application implements UserObserver{
         choiceLanguage.setTooltip(new Tooltip("Select a language")); 
         Label lblLocation = new Label("Location:"); //when this changes, change the timezone of the program
         choiceLanguage.setOnAction(event -> {//when this changes, change the language of the fields on the form
-                System.out.println(choiceLanguage.getSelectionModel().getSelectedItem()); //DEBUG ONLY
+                //System.out.println(choiceLanguage.getSelectionModel().getSelectedItem()); //DEBUG ONLY
                 if(choiceLanguage.getSelectionModel().getSelectedItem()=="English"){
                     Locale.setDefault(new Locale("en"));
                     this.rb = ResourceBundle.getBundle("LoginFields",Locale.getDefault());

@@ -158,7 +158,7 @@ public class CustomerAddView implements CustomerViewInterface{
             }catch (FormatException ex){
                 //handle bad formatting
             }
-            System.out.println("Customer in View: "+customer); //DEBUG ONLY
+            //System.out.println("Customer in View: "+customer); //DEBUG ONLY
             controller.createCustomer(customer);
             controller.showCustomerListView();
             customerStage.close();

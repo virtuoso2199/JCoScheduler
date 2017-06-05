@@ -152,7 +152,7 @@ public class AppointmentView implements AppointmentViewInterface{
         //if appointment data exists, then pre-populate fields
         if (this.appt.getApptID()!=-1){ //only run if appointment is being updated from database (i.e. does not have an ID of -1)
             choiceCustomer.getSelectionModel().select(this.appt.getCustomer()); //Should set the customer to the one in the appointment
-            System.out.println("Customer choices are: "+ choiceCustomer.getItems()); //DEBUG ONLY
+            //System.out.println("Customer choices are: "+ choiceCustomer.getItems()); //DEBUG ONLY
             txtTitle.setText(this.appt.getTitle());
             choiceLocation.getSelectionModel().select(this.appt.getLocation());
             txtContact.setText(this.appt.getContact());
@@ -180,7 +180,7 @@ public class AppointmentView implements AppointmentViewInterface{
 
     @Override
     public void close() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        apptWindow.close();
     }
     
 }

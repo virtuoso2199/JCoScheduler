@@ -125,9 +125,7 @@ public class MainWindow {
         mainWindow = buildMainWindow();
         mainWindow.show();
     }
-    
-    //DEBUG ONLY UNTIL CONTROLLERS ARE ALL IN PLACE
-    
+      
     //Getters and setters for session variables
     
     public static ZoneId getTimeZone(){

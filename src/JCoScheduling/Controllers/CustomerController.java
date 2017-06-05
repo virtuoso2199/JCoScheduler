@@ -147,7 +147,7 @@ public class CustomerController implements CustomerControllerInterface{
     
     public void createCustomer(CustomerModelInterface customer){
         customer.setAuditInfo(new AuditInfo(user.getUsername(),LocalDateTime.now(),user.getUsername(),LocalDateTime.now()));
-        System.out.println("Customer in Controller: "+customer); //DEBUG ONLY
+        //System.out.println("Customer in Controller: "+customer); //DEBUG ONLY
         customerDAO.createCustomer(customer);
     }
     
