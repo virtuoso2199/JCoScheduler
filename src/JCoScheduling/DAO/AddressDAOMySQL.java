@@ -29,7 +29,7 @@ public class AddressDAOMySQL implements AddressDAO{
     static {
         try{
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://10.0.0.194/U03lv6", "jbowley", "Paw52beh!");
+            conn = DriverManager.getConnection("jdbc:mysql://52.206.157.109/U03lv6", "U03lv6", "53688016198");
         }catch(Exception ex){
             ex.printStackTrace();
         }

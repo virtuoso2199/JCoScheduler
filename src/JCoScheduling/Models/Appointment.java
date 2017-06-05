@@ -7,6 +7,7 @@ package JCoScheduling.Models;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 /**
@@ -218,6 +219,10 @@ public class Appointment implements AppointmentModelInterface, CustomerObserver,
     
     public int compareTo(Appointment appointment){
         return this.getStartTime().compareTo(appointment.getStartTime());
+    }
+    
+    public String toString(){
+        return this.title + " on " + this.startTime.toLocalDateTime().format(DateTimeFormatter.ISO_DATE) + " at " + this.startTime.toLocalDateTime().format(DateTimeFormatter.ofPattern("hh:mm a"))+ " with "+ this.customer.getCustomerName();
     }
 
 

@@ -31,7 +31,7 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
     static {
         try{
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://10.0.0.194/U03lv6", "jbowley", "Paw52beh!");
+            conn = DriverManager.getConnection("jdbc:mysql://52.206.157.109/U03lv6", "U03lv6", "53688016198");
         }catch(Exception ex){
             ex.printStackTrace();
         }
@@ -192,6 +192,7 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
                
+            while(rs.next()){
                 Appointment appointment = new Appointment(rs.getInt("appointmentId"),
                                                  customer,
                                                  rs.getString("title"),
@@ -203,7 +204,7 @@ public class AppointmentDAOMySQL implements AppointmentDAO{
                                                  rs.getTimestamp("end").toLocalDateTime().atZone(ZoneId.of("UTC")),
                                                  new AuditInfo(rs.getString("createdBy"),rs.getTimestamp("createDate").toLocalDateTime(),rs.getString("lastUpdateBy"),rs.getTimestamp("lastUpdate").toLocalDateTime()));
                 apptList.add(appointment);
-               
+            } 
             stmt.closeOnCompletion();
             
         }catch(SQLException ex){

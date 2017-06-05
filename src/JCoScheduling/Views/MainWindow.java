@@ -8,6 +8,8 @@ package JCoScheduling.Views;
 import JCoScheduling.Controllers.AppointmentController;
 import JCoScheduling.Controllers.AppointmentControllerInterface;
 import JCoScheduling.Controllers.CustomerController;
+import JCoScheduling.Controllers.ReportController;
+import JCoScheduling.Controllers.ReportControllerInterface;
 import JCoScheduling.DAO.AppointmentDAO;
 import JCoScheduling.DAO.AppointmentDAOMySQL;
 import JCoScheduling.DAO.UserDAOMySQL;
@@ -22,17 +24,13 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
-import javafx.concurrent.ScheduledService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.GridPane;
@@ -196,6 +194,10 @@ public class MainWindow {
         root.add(btnCalendar,2,1);
         
         Button btnReports = new Button("Reports");
+        btnReports.setOnAction(event ->{
+            ReportControllerInterface rc = new ReportController();
+            rc.showReportMenu();
+        });
         root.add(btnReports,3,1);
         
         Button btnQuit = new Button("Quit");

@@ -98,6 +98,7 @@ public class MonthCalendarWindow {
                 dayPane.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #000000; -fx-border-width: 1px;");
                 dayPane.setPrefWidth(100);
                 dayPane.setPrefHeight(100);
+                System.out.println("Day: "+ day+"\tCurrentRenderDt: "+currentRenderDt.getDayOfWeek().getValue()); //DEBUG ONLY
                 if (currentRenderDt.getDayOfWeek().getValue()==day && currentRenderDt.until(this.viewStopDt,ChronoUnit.DAYS)>=0){ 
                     Label lblDate = new Label(currentRenderDt.format(DateTimeFormatter.ISO_LOCAL_DATE));
                     dayPane.getChildren().add(lblDate);
@@ -109,13 +110,13 @@ public class MonthCalendarWindow {
                     currentRenderDt = currentRenderDt.plusDays(1L);
                 }
                 
-                System.out.println("Day: "+ day+"\tCurrentRenderDt: "+currentRenderDt.getDayOfWeek().getValue()); //DEBUG ONLY
+                
                 weekPane.getChildren().add(dayPane);
                 
             }
             
             root.add(weekPane, 0, row+1,7,1); //row+1 accounts for title bar row
-            currentRenderDt = currentRenderDt.plusDays(1L);
+            //currentRenderDt = currentRenderDt.plusDays(1L);
         }
         
         Button btnWeek = new Button("Week");

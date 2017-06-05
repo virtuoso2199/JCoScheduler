@@ -16,6 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -29,11 +30,11 @@ public class ReportsByCustomerView implements ReportingViewInterface{
     
     private Stage stage;
     private ReportControllerInterface controller;
-    private final ObservableList<AppointmentModelInterface> reportList;
+    private ObservableList<AppointmentModelInterface> reportList;
     private ArrayList<CustomerModelInterface> customers;
     
     //UI Controls
-    GridPane root;
+    FlowPane root;
     Label lblTitle;
     ListView lvReportList;
     TableColumn tcCustID;
@@ -44,37 +45,56 @@ public class ReportsByCustomerView implements ReportingViewInterface{
     
     public ReportsByCustomerView(ReportControllerInterface controller){
         this.controller = controller;
-        this.reportList = controller.getAllAppts();
         this.customers = controller.getAllCustomers();
     }
     
 
     @Override
     public void show() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.stage = buildView();
+        this.stage.show();
     }
     
-    public void buildView(){
+    public Stage buildView(){
         stage = new Stage();
         
-        root = new GridPane();
+        root = new FlowPane();
+        root.setPrefSize(290, 790);
         
         lblTitle = new Label("Reports by Customer");
-        lblTitle.setFont(new Font("Verdana",30));
+        lblTitle.setFont(new Font("Verdana",20));
         DropShadow titleShadow = new DropShadow();
         titleShadow.setColor(Color.DARKGRAY);
         titleShadow.setOffsetX(3.0);
         titleShadow.setOffsetY(3.0);
         lblTitle.setEffect(titleShadow);
-        root.add(lblTitle, 0, 0,5,1);
+        root.getChildren().add(lblTitle);
         
         //get report list from controller to populate list with
         
-        lvReportList = new ListView();
-        lvReportList.setItems(this.reportList);
-       
+        //add a label for each customer then a ListView containing all their appointments
+        for(CustomerModelInterface customer: this.customers){
+            Label lblCustomer = new Label(customer.getCustomerName());
+            root.getChildren().add(lblCustomer);
+            lvReportList = new ListView();
+            lvReportList.setPrefSize(275, 100);
+            lvReportList.setItems(controller.getApptsForCustomer(customer));
+            root.getChildren().add(lvReportList);
+        }
         
-        root.add(lvReportList, 0, 1,5,10);
+        Button btnOK = new Button("OK");
+        btnOK.setOnAction(event ->{
+            close();
+        });
+        
+        root.getChildren().add(btnOK);
+        
+        scene = new Scene(root,300,800);
+        stage.setScene(scene);
+        stage.setTitle("Reports by Customer");
+        
+        
+        return stage;
         
     }    
 
@@ -85,7 +105,7 @@ public class ReportsByCustomerView implements ReportingViewInterface{
 
     @Override
     public void close() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.stage.close();
     }
     
 }
