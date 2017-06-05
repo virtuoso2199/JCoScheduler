@@ -120,6 +120,7 @@ public class C195Final2 extends Application implements UserObserver{
                 lblLocation.setText(this.rb.getString("location"));
             });
         root.add(choiceLanguage,1,3);
+        choiceLanguage.getSelectionModel().select("English");
 //        hboxLanguage.getChildren().addAll(lblLanguage,choiceLanguage);
 //        hboxLanguage.setSpacing(10);
         
@@ -135,6 +136,7 @@ public class C195Final2 extends Application implements UserObserver{
             userTimezone = Appointment.getZone(choiceLocation.getSelectionModel().getSelectedItem().toString()); //set timezone to display appointments in, defaulting to New York's if none selected
         });
         root.add(choiceLocation,1,4);
+        choiceLocation.getSelectionModel().select("New York");
 //        hboxLocation.getChildren().addAll(lblLocation,choiceLocation);
 //        hboxLocation.setSpacing(20);
         final Label lblInfo = new Label(); //used to display information to the user
