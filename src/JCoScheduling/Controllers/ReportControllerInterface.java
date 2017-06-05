@@ -6,6 +6,8 @@
 package JCoScheduling.Controllers;
 
 import JCoScheduling.Models.AppointmentModelInterface;
+import JCoScheduling.Models.CustomerModelInterface;
+import java.util.ArrayList;
 import javafx.collections.ObservableList;
 
 /**
@@ -23,5 +25,7 @@ public interface ReportControllerInterface {
     public void showApptsByMonth();
     
     public ObservableList<AppointmentModelInterface> getAllAppts();
+    
+    public ArrayList<CustomerModelInterface> getAllCustomers();
     
 }
