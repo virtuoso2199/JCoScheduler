@@ -14,6 +14,7 @@ import JCoScheduling.Models.UserModelInterface;
 import JCoScheduling.Models.UserObserver;
 import JCoScheduling.Views.MainWindow;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import javafx.application.Application;
@@ -53,6 +54,9 @@ public class C195Final2 extends Application implements UserObserver{
         user = new User();
         user.registerObserver((UserObserver)this);
         userController = new UserController(new UserDAOMySQL(),primaryStage,user);
+        this.userLocale = Locale.getDefault();
+        this.rb = ResourceBundle.getBundle("LoginFields",Locale.getDefault());
+        this.userTimezone = ZoneId.systemDefault();
               
         //create a GridPane for form layout
         GridPane root = new GridPane();
@@ -114,13 +118,34 @@ public class C195Final2 extends Application implements UserObserver{
                     Locale.setDefault(new Locale("es"));
                     this.rb = ResourceBundle.getBundle("LoginFields",Locale.getDefault());
                 }
+                //reload fields on change of language
                 lblUsername.setText(this.rb.getString("username"));
                 lblPassword.setText(this.rb.getString("password"));
                 lblLanguage.setText(this.rb.getString("language"));
                 lblLocation.setText(this.rb.getString("location"));
             });
+        
         root.add(choiceLanguage,1,3);
-        choiceLanguage.getSelectionModel().select("English");
+        
+        //sets fields to system default language is none selected
+        lblUsername.setText(this.rb.getString("username"));
+        lblPassword.setText(this.rb.getString("password"));
+        lblLanguage.setText(this.rb.getString("language"));
+        lblLocation.setText(this.rb.getString("location"));
+        
+        //set language to default for locale if applicable. Otherwise, default to English
+        if(this.userLocale.equals(new Locale("fr").getLanguage())){
+            //default system locale uses French language
+            choiceLanguage.getSelectionModel().select("Français");
+        } else if (this.userLocale.equals(new Locale("es").getLanguage())){
+            //default system locale uses Spanish language
+            choiceLanguage.getSelectionModel().select("Español");
+        } else {
+            //default to English if other languags are unavailable
+            choiceLanguage.getSelectionModel().select("English");
+        }
+        
+        
 //        hboxLanguage.getChildren().addAll(lblLanguage,choiceLanguage);
 //        hboxLanguage.setSpacing(10);
         
@@ -136,7 +161,19 @@ public class C195Final2 extends Application implements UserObserver{
             userTimezone = Appointment.getZone(choiceLocation.getSelectionModel().getSelectedItem().toString()); //set timezone to display appointments in, defaulting to New York's if none selected
         });
         root.add(choiceLocation,1,4);
-        choiceLocation.getSelectionModel().select("New York");
+        
+        if(this.userTimezone.normalized().equals(Appointment.getZone("London").normalized())){
+            //system default timezone is the same as London so set that in the choiceLocation dropdown
+            choiceLocation.getSelectionModel().select("London");
+        } else if (this.userTimezone.normalized().equals(Appointment.getZone("Phoenix").normalized())){
+            //system default timezone is the same as Phoenix, AZ so set that in the choiceLocation dropdown
+            choiceLocation.getSelectionModel().select("Phoenix");
+        } else if (this.userTimezone.normalized().equals(Appointment.getZone("New York").normalized())){
+            //system default timezone is the same as NYC so set that in the choiceLocation dropdown
+            choiceLocation.getSelectionModel().select("New York");
+        } //if user timezone does not match one of the default locations, times will default to system default though no location will be selected
+        
+        
 //        hboxLocation.getChildren().addAll(lblLocation,choiceLocation);
 //        hboxLocation.setSpacing(20);
         final Label lblInfo = new Label(); //used to display information to the user
