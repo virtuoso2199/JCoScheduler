@@ -99,51 +99,51 @@ public class C195Final2 extends Application implements UserObserver{
        
 
 //        HBox hboxLanguage = new HBox();
-        Label lblLanguage = new Label("Language:");
-//        lblLanguage.setPrefSize(40,20);
-        root.add(lblLanguage,0,3);
-        ChoiceBox choiceLanguage = new ChoiceBox(FXCollections.observableArrayList("English","Français","Español")); 
-//        choiceLanguage.setPrefSize(120,20);
-        choiceLanguage.setTooltip(new Tooltip("Select a language")); 
+//        Label lblLanguage = new Label("Language:");
+////        lblLanguage.setPrefSize(40,20);
+//        root.add(lblLanguage,0,3);
+//        ChoiceBox choiceLanguage = new ChoiceBox(FXCollections.observableArrayList("English","Français","Español")); 
+////        choiceLanguage.setPrefSize(120,20);
+//        choiceLanguage.setTooltip(new Tooltip("Select a language")); 
         Label lblLocation = new Label("Location:"); //when this changes, change the timezone of the program
-        choiceLanguage.setOnAction(event -> {//when this changes, change the language of the fields on the form
-                //System.out.println(choiceLanguage.getSelectionModel().getSelectedItem()); //DEBUG ONLY
-                if(choiceLanguage.getSelectionModel().getSelectedItem()=="English"){
-                    Locale.setDefault(new Locale("en"));
-                    this.rb = ResourceBundle.getBundle("LoginFields",Locale.getDefault());
-                } else if(choiceLanguage.getSelectionModel().getSelectedItem()=="Français"){
-                    Locale.setDefault(new Locale("fr"));
-                    this.rb = ResourceBundle.getBundle("LoginFields",Locale.getDefault());
-                } else if(choiceLanguage.getSelectionModel().getSelectedItem()=="Español"){
-                    Locale.setDefault(new Locale("es"));
-                    this.rb = ResourceBundle.getBundle("LoginFields",Locale.getDefault());
-                }
-                //reload fields on change of language
-                lblUsername.setText(this.rb.getString("username"));
-                lblPassword.setText(this.rb.getString("password"));
-                lblLanguage.setText(this.rb.getString("language"));
-                lblLocation.setText(this.rb.getString("location"));
-            });
+//        choiceLanguage.setOnAction(event -> {//when this changes, change the language of the fields on the form
+//                //System.out.println(choiceLanguage.getSelectionModel().getSelectedItem()); //DEBUG ONLY
+//                if(choiceLanguage.getSelectionModel().getSelectedItem()=="English"){
+//                    Locale.setDefault(new Locale("en"));
+//                    this.rb = ResourceBundle.getBundle("LoginFields",Locale.getDefault());
+//                } else if(choiceLanguage.getSelectionModel().getSelectedItem()=="Français"){
+//                    Locale.setDefault(new Locale("fr"));
+//                    this.rb = ResourceBundle.getBundle("LoginFields",Locale.getDefault());
+//                } else if(choiceLanguage.getSelectionModel().getSelectedItem()=="Español"){
+//                    Locale.setDefault(new Locale("es"));
+//                    this.rb = ResourceBundle.getBundle("LoginFields",Locale.getDefault());
+//                }
+//                //reload fields on change of language
+//                lblUsername.setText(this.rb.getString("username"));
+//                lblPassword.setText(this.rb.getString("password"));
+//                lblLanguage.setText(this.rb.getString("language"));
+//                lblLocation.setText(this.rb.getString("location"));
+//            });
+//        
+//        root.add(choiceLanguage,1,3);
         
-        root.add(choiceLanguage,1,3);
-        
-        //sets fields to system default language is none selected
+        //sets fields to system default language 
         lblUsername.setText(this.rb.getString("username"));
         lblPassword.setText(this.rb.getString("password"));
-        lblLanguage.setText(this.rb.getString("language"));
+//        lblLanguage.setText(this.rb.getString("language"));
         lblLocation.setText(this.rb.getString("location"));
         
         //set language to default for locale if applicable. Otherwise, default to English
-        if(this.userLocale.equals(new Locale("fr").getLanguage())){
-            //default system locale uses French language
-            choiceLanguage.getSelectionModel().select("Français");
-        } else if (this.userLocale.equals(new Locale("es").getLanguage())){
-            //default system locale uses Spanish language
-            choiceLanguage.getSelectionModel().select("Español");
-        } else {
-            //default to English if other languags are unavailable
-            choiceLanguage.getSelectionModel().select("English");
-        }
+//        if(this.userLocale.equals(new Locale("fr").getLanguage())){
+//            //default system locale uses French language
+//            choiceLanguage.getSelectionModel().select("Français");
+//        } else if (this.userLocale.equals(new Locale("es").getLanguage())){
+//            //default system locale uses Spanish language
+//            choiceLanguage.getSelectionModel().select("Español");
+//        } else {
+//            //default to English if other languags are unavailable
+//            choiceLanguage.getSelectionModel().select("English");
+//        }
         
         
 //        hboxLanguage.getChildren().addAll(lblLanguage,choiceLanguage);
